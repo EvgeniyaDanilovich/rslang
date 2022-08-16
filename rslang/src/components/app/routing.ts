@@ -41,26 +41,26 @@ function switchToState(newState: { pagename: string }) {
     location.hash = stateStr;
 }
 
-export function switchToMain() {
+function switchToMain() {
     switchToState({ pagename: 'main' });
 }
 
-export function switchToLogin() {
+function switchToLogin() {
     switchToState({ pagename: 'login' });
 }
 
-export function switchToBook() {
+function switchToBook() {
     switchToState({ pagename: 'book' });
 }
 
-export function switchToAudiocall() {
+function switchToAudiocall() {
     switchToState({ pagename: 'audiocall' });
 }
 
-export function switchToSprint() {
+function switchToSprint() {
     switchToState({ pagename: 'sprint' });
 }
 
-export function switchToStatistic() {
+function switchToStatistic() {
     switchToState({ pagename: 'statistic' });
 }
