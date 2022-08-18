@@ -1,3 +1,4 @@
 import './style.scss';
+import { router } from './utils/router';
 
-console.log('Hello');
+router.resolve();
