@@ -1,5 +1,4 @@
 import './style.scss';
-import { getRouter } from './utils/router';
+import { router } from './utils/router';
 
-console.log('Hello');
-getRouter();
+router.resolve();
