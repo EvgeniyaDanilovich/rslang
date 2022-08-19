@@ -16,7 +16,7 @@ export interface Word {
 }
 
 export interface UserWord {
-    difficulty:	string;
+    difficulty: string;
     optional: object;
 }
 
@@ -31,7 +31,7 @@ export interface Setting {
 }
 
 export interface User {
-    name: string;
+    name?: string;
     email: string;
     password: string;
 }
@@ -40,18 +40,6 @@ export interface Auth {
     message: string;
     token: string;
     refreshToken: string;
-    userId:	string;
+    userId: string;
     name: string;
-}
-
-export interface UserWordOptional {
-    // что должно быть здесь?
-}
-
-export interface StatisticOptional {
-    // что должно быть здесь?
-}
-
-export interface SettingOptional {
-    // что должно быть здесь?
 }
