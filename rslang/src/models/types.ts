@@ -16,7 +16,7 @@ export interface Word {
 }
 
 export interface UserWord {
-    difficulty:	string;
+    difficulty: string;
     optional: object;
 }
 
@@ -40,7 +40,7 @@ export interface Auth {
     message: string;
     token: string;
     refreshToken: string;
-    userId:	string;
+    userId: string;
     name: string;
 }
 
