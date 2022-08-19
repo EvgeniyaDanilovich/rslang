@@ -1,14 +1,6 @@
 import './style.scss';
 import { router } from './utils/router';
 
-import { getChunkWords, getWordWithAssetsById } from './api/words';
-import { createUser, getUser, updateUser, deleteUser, getNewUserToken } from './api/users';
-import { loginUser } from './api/sign-in';
-import { getAllUserWords, createUserWord, getUserWord, updateUserWord, deleteUserWord } from './api/users-words';
-import { getAllAggregatedWords, getAggregatedWordById } from './api/users-aggregated-words';
-import { getStatistic, upsertStatistic } from './api/user-statistic';
-import { getSettings, upsertSettings } from './api/user-settings';
-
 router.resolve();
 
 // для проверки:
