@@ -1,7 +1,105 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+}
 body {
-    margin: 0;
-    * {
-      position: relative;
-      box-sizing: border-box;
-    }
+  height: 100%;
+  margin: 0;
+}
+ul {
+  padding: 0;
+}
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: #272727;
+}
+p {
+  margin: 0;
+}
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: #272727;
+  height: 100%;
+}
+.header-container {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #d7efe6;
+  padding: 20px 35px;
+  width: 15vw;
+  height: 100vh;
+}
+.logo {
+  text-decoration: none;
+  color: #40959f;
+  font-weight: bold;
+  font-size: 30px;
+}
+.nav {
+  display: flex;
+  flex-direction: row;
+}
+.nav-items {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  gap: 5vw;
+  width: 100%;
+  margin: 0;
+}
+.nav-item {
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+.nav-item > * {
+  text-decoration: none;
+  color: #495F76;
+}
+.nav-item > *:hover {
+  color: #0E1317;
+}
+.authorization-btn {
+  background-color: #40959f;
+  border: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.main-container {
+  flex: 1 1 auto;
+  padding: 0 10px;
+  margin-left: 15vw;
+}
+.footer-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 10px;
+  background-color: rgb(215, 239, 230);
+  gap: 5%;
+  padding-left: 15vw;
+}
+.githabs {
+  display: flex;
+  justify-content: center;
+  gap: 10%;
+  align-items: center;
+  width: 100%;
+}
+.rs-link {
+  display: inline-block;
+}
+.rs-school {
+  width: 20%;
 }
