@@ -1,61 +1,79 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ru">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Title</title>-->
-<!--    <link rel="stylesheet" href="main-page.scss">-->
-<!--</head>-->
-<!--<body>-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="main-page.css">
+</head>
+<body>
     <div class="wrapper">
         <header class="header-container">
             <a href="/main" class="logo">RS Lang</a>
             <nav class="nav">
                 <ul class="nav-items">
-                    <li class="nav-item"><a href="/main">Главная</a></li>
-                    <li class="nav-item"><a href="/textbook">Учебник</a></li>
-                    <li class="nav-item"><a href="/audiocall">Аудиовызов</a></li>
-                    <li class="nav-item"><a href="/sprint">Спринт</a></li>
-                    <li class="nav-item"><a href="/statistic">Статистика</a></li>
+                    <li class="nav-item"><a href="/main">Main</a></li>
+                    <li class="nav-item"><a href="/textbook">Textbook</a></li>
+                    <li class="nav-item"><a href="/audiocall">Audiocall</a></li>
+                    <li class="nav-item"><a href="/sprint">Sprint</a></li>
+                    <li class="nav-item"><a href="/statistic">Statistic</a></li>
                 </ul>
             </nav>
-            <button class="authorization-btn">Авторизация</button>
+            <button class="authorization-btn">Log in</button>
         </header>
         <main class="main-container">
             <div class="description">
-                <p>Эффективное приложение для изучения английского языка!</p>
+                <p class="description-title">RS Lang - the effective application<br>for learning English!</p>
+                <img src="../../assets/7.svg" alt="command" class="description-image">
             </div>
             <div class="about-rslang">
                 <div class="opportunities">
-                    <h2>Возможности RS Lang</h2>
-                    <ul>
-                        <li>Учи слова</li>
-                        <li>Играй</li>
+                    <h2>RS Lang Features</h2>
+                    <ul class="case">
+                        <li>Did basic project settings</li>
+                        <li>Did basic project settings</li>
+                        <li>Did basic project settings</li>
                     </ul>
                 </div>
+                <img src="../../assets/6.svg" alt="pupil" class="about-rslang-image">
                 <div class="advantages">
-                    <h2>Преимущества RS Lang</h2>
-                    <ul>
-                        <li>Учи играя</li>
-                        <li>Отслеживай статистику</li>
+                    <h2>Advantages of RS Lang</h2>
+                    <ul class="case">
+                        <li>Did basic project settings</li>
+                        <li>Did basic project settings</li>
+                        <li>Did basic project settings</li>
                     </ul>
                 </div>
             </div>
-            <div class="about-developers">
-                <h2>О команде</h2>
-                <div class="developer">
-                    <img class="developer-img" src="" alt="Igor">
-                    <a class="developer-link" href="https://github.com/koviatsinets">GitHub</a>
-                    <p class="developer-description">Вклад в разработку</p>
-                </div>
-                <div class="developer">
-                    <img class="developer-img" src="" alt="Eugenia">
-                    <a class="developer-link" href="https://github.com/EvgeniyaDanilovich">GitHub</a>
-                    <p class="developer-description">Вклад в разработку</p>
-                </div>
-                <div class="developer">
-                    <img class="developer-img" src="" alt="Darya">
-                    <a class="developer-link" href="https://github.com/Darya-Kazharnovich">GitHub</a>
-                    <p class="developer-description">Вклад в разработку</p>
+            <div class="about-us">
+                <h2>About us</h2>
+                <div class="about-developers">
+                    <div class="developer">
+                        <img class="developer-img" src="../../assets/igor.jpeg" alt="Igor">
+                        <div class="developer-description">
+                            <p class="name">Igor Koviatsinets</p>
+                            <p class="developer-contribution">Front-end Developer</p>
+                            <p class="contribution">Did basic project settings, initial layout, redux setup, router setup, login form, part of the TextBook page, "Audio Challenge" game, "Savannah" game, backend</p>
+                            <a class="developer-link" href="https://github.com/koviatsinets">GitHub</a>
+                        </div>
+                    </div>
+                    <div class="developer">
+                        <img class="developer-img" src="../../assets/eugenia.jpg" alt="Eugenia">
+                        <div class="developer-description">
+                            <p class="name">Evgeniya Danilovich</p>
+                            <p class="developer-contribution">Front-end Developer</p>
+                            <p class="contribution">Did basic project settings, initial layout, redux setup, router setup, login form, part of the TextBook page, "Audio Challenge" game, "Savannah" game, backend</p>
+                            <a class="developer-link" href="https://github.com/EvgeniyaDanilovich">GitHub</a>
+                        </div>
+                    </div>
+                    <div class="developer">
+                        <img class="developer-img" src="../../assets/darya.jpg" alt="Darya">
+                        <div class="developer-description">
+                            <p class="name">Darya Kazharnovich</p>
+                            <p class="developer-contribution">Front-end Developer</p>
+                            <p class="contribution">Did basic project settings, initial layout, redux setup, router setup, login form, part of the TextBook page, "Audio Challenge" game, "Savannah" game, backend</p>
+                            <a class="developer-link" href="https://github.com/Darya-Kazharnovich">GitHub</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -66,8 +84,11 @@
                 <a class="developer-link" href="https://github.com/Darya-Kazharnovich">Darya Kazharnovich</a>
             </div>
             <span>2022</span>
-            <a href="https://rs.school/js/"><img src="" alt="RSSchool logo"></a>
+            <div class="rs-link">
+                <a href="https://rs.school/js/"><img src="../../assets/rs_school_js.svg" alt="RSSchool logo" class="rs-school"></a>
+            </div>
+<!--            <a href="https://rs.school/js/" class="rs-link"><img src="../../assets/rs_school_js.svg" alt="RSSchool logo" class="rs-school"></a>-->
         </footer>
     </div>
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>
