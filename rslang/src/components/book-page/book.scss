@@ -1,0 +1,68 @@
+.card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin: 0px 0px 30px 0px;
+  
+    &__img {
+      img{
+        width: 150px;
+        height: 150px;
+        background-color: rgb(73, 141, 161);
+      }
+    }
+  
+    &__info {
+      margin: 0px 0px 0px 40px;
+    }
+  }
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0px 0px 20px 0px;
+  }
+  .word {
+    font-size: 28px;
+    margin: 0px 20px 0px 0px;
+  }
+  .transcription {
+    flex: 1 1 auto;
+  }
+  .sound {
+    svg{
+      width: 50px;
+      height: 40px;
+      cursor: pointer;
+    }
+  }
+  .translation {
+    flex: 0 0 100%;
+  }
+  .explain {
+  }
+  .explain-translation {
+    margin: 0px 0px 20px 0px;
+  }
+  .example {
+  }
+  .example-translation {
+  }
+
+  // -------------------------------------------------
+
+  .game-nav {
+  }
+  .game {
+  }
+  .sections {
+    display: flex;
+  }
+  .section {
+  }
+  .pagination {
+    display: flex;
+  }
+  .page {
+  }
+  

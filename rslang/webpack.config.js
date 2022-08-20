@@ -48,6 +48,10 @@ const baseConfig = {
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
     ],
+    experiments: {
+        futureDefaults: true,
+        topLevelAwait: true,
+    },
 };
 
 module.exports = ({ mode }) => {

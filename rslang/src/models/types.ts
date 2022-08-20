@@ -43,3 +43,4 @@ export interface Auth {
     userId: string;
     name: string;
 }
+<<<<<<< HEAD
