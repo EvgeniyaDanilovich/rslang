@@ -44,14 +44,14 @@ export interface Auth {
     name: string;
 }
 
-export interface UserWordOptional {
-    // что должно быть здесь?
-}
+// export interface UserWordOptional {
+//     // что должно быть здесь?
+// }
 
-export interface StatisticOptional {
-    // что должно быть здесь?
-}
+// export interface StatisticOptional {
+//     // что должно быть здесь?
+// }
 
-export interface SettingOptional {
-    // что должно быть здесь?
-}
+// export interface SettingOptional {
+//     // что должно быть здесь?
+// }

@@ -1,4 +1,4 @@
 export function renderPageContent(pageHTML: string) {
-    const content = document.querySelector('.content') as HTMLElement;
+    const content = document.querySelector('.main-container') as HTMLElement;
     content.innerHTML = `${pageHTML}`;
 }
