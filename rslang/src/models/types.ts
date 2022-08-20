@@ -31,7 +31,7 @@ export interface Setting {
 }
 
 export interface User {
-    name: string;
+    name?: string;
     email: string;
     password: string;
 }
@@ -43,15 +43,4 @@ export interface Auth {
     userId: string;
     name: string;
 }
-
-// export interface UserWordOptional {
-//     // что должно быть здесь?
-// }
-
-// export interface StatisticOptional {
-//     // что должно быть здесь?
-// }
-
-// export interface SettingOptional {
-//     // что должно быть здесь?
-// }
+<<<<<<< HEAD

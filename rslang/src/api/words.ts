@@ -1,4 +1,4 @@
-const path = 'https://rslangforrsschool.herokuapp.com';
+import { path } from '../index';
 
 export async function getChunkWords(group: number, page: number) {
     const rawResponse = await fetch(`${path}/words?group=${group}&page=${page}`, {
