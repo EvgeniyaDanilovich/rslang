@@ -1,11 +1,11 @@
-import './main-page.scss'
-require('./img/7.svg')
-require('./img/6.svg')
-require('./img/igor.jpeg')
-require('./img/eugenia.jpeg')
-require('./img/darya.jpeg')
+import './main-page.scss';
+// require('./img/7.svg');
+// require('./img/6.svg');
+// require('./img/igor.jpeg');
+// require('./img/eugenia.jpeg');
+// require('./img/darya.jpeg');
 
-export const mainPage = `
+export const mainPageHtml = `
 <div class="description">
     <p class="description-title">RS Lang - the effective application<br>for learning English!</p>
     <img src="img/7.svg" alt="command" class="description-image">
@@ -61,4 +61,4 @@ export const mainPage = `
         </div>
     </div>
 </div>
-`
+`;
