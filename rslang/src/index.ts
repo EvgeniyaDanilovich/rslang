@@ -1,6 +1,8 @@
 import './style.scss';
 import { router } from './utils/router';
 
+require('./img/rs_school_js.svg');
+
 router.resolve();
 
 // для проверки:
