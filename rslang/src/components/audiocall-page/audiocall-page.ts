@@ -72,16 +72,14 @@ export const renderAudiocallPage = (): void => {
         if (
             (EO.target as HTMLElement).innerText !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
         ) {
-            console.log('false');
             (EO.target as HTMLElement).style.cssText = 'background-color: red; color: white';
             arrFalseWord.push(currentWordSelect);
         } else {
-            console.log('true');
             (EO.target as HTMLElement).style.cssText = 'background-color: green; color: white';
             arrTrueWord.push(currentWordSelect);
         }
+        document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
         countCard++;
-        console.log(countCard);
         if (countCard === 10) {
             showResult();
         }
