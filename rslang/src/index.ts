@@ -18,4 +18,3 @@ router.resolve();
 
 import { addEventListenerPopUp } from '../src/components/login-page/login-page';
 addEventListenerPopUp();
-

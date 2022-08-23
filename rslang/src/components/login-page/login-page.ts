@@ -52,7 +52,7 @@ function signIn(event: MouseEvent) {
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
         const inputPassword = document.querySelector('.password-input') as HTMLInputElement;
-//add to localstorage dataUser
+        //add to localstorage dataUser
         const dataUser = {} as User;
         if (document.querySelector('.name-input') && inputName.value !== null) {
             dataUser.name = inputName.value;
