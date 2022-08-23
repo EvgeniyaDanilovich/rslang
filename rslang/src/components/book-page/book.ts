@@ -1,4 +1,4 @@
-import { dataWords } from '../../api/words';
+import { dataWords, path } from '../../api/words';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
@@ -9,18 +9,22 @@ const renderWord = (
     transcription: string,
     wordTranslate: string,
     image: string,
+    audio: string,
     textMeaning: string,
     textMeaningTranslate: string,
     textExample: string,
     textExampleTranslate: string
 ) =>
     `<div class="card" id="${id}">
-<div class="card__img"><img src="${image}" alt=""></div>
+<div class="card__img"><img src="${path}/${image}" alt=""></div>
 <div class="card__info">
     <div class="card-header">
         <div class="word">${word}</div>
         <div class="transcription">${transcription}</div>
         <div class="sound">
+        <audio id="audio-${id}">
+            <source src="${path}/${audio}" type="audio/mpeg">
+        </audio>
             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <style>
@@ -60,6 +64,7 @@ const renderWords = (currentWords: Word[]) =>
                     word.transcription,
                     word.wordTranslate,
                     word.image,
+                    word.audio,
                     word.textMeaning,
                     word.textMeaningTranslate,
                     word.textExample,
@@ -90,9 +95,25 @@ export const renderBookPage = (): void => {
     <div class="page"><a href="#">5</a></div>
     <div class="page"><a href="#">6</a></div>
 </div>
-${renderWords(dataWords)}`;
+<div class="word-wrapper">
+    ${renderWords(dataWords)}
+</div>`;
 
     renderPageContent(content);
 };
 
-// ${renderWords(dataWords)}
+export function listenBookPage(): void {
+    const card = document.querySelector('.word-wrapper') as HTMLElement;
+
+    card.addEventListener('click', (event: Event) => {
+        const currentItem = event.target as HTMLElement;
+        const card = currentItem.closest('.card') as HTMLElement;
+        const currentId: string = card.id;
+        const audio = document.querySelector(`#audio-${currentId}`) as HTMLAudioElement;
+
+        if (currentItem.closest('.sound')) {
+            console.log(currentItem.closest('.sound'));
+            audio.play();
+        }
+    });
+}

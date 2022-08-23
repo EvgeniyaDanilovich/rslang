@@ -1,3 +1,4 @@
+import { dataWords } from './api/words';
 import './style.scss';
 import { router } from './utils/router';
 
@@ -13,3 +14,5 @@ const refreshToken =
 export { path, token, refreshToken };
 
 router.resolve();
+
+console.log(dataWords);
