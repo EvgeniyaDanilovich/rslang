@@ -13,3 +13,9 @@ const refreshToken =
 export { path, token, refreshToken };
 
 router.resolve();
+
+// рендер поп-апа
+
+import { addEventListenerPopUp } from '../src/components/login-page/login-page';
+addEventListenerPopUp();
+
