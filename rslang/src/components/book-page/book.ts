@@ -1,7 +1,11 @@
-import { dataWords, path } from '../../api/words';
+import { dataWords, getChunkWords, path } from '../../api/words';
+import { WordsDifficultyLevel } from '../../enums/levels';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
+
+let page = 1;
+let group = 1;
 
 const renderWord = (
     id: string,
@@ -90,20 +94,23 @@ export const renderBookPage = (): void => {
     <div class="game"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
-    <div class="section"><a href="#">1</a></div>
-    <div class="section"><a href="#">2</a></div>
-    <div class="section"><a href="#">3</a></div>
-    <div class="section"><a href="#">4</a></div>
-    <div class="section"><a href="#">5</a></div>
-    <div class="section"><a href="#">6</a></div>
+    <div >Level:</div>
+    <div class="section" id="level-1">1</div>
+    <div class="section" id="level-2">2</div>
+    <div class="section" id="level-3">3</div>
+    <div class="section" id="level-4">4</div>
+    <div class="section" id="level-5">5</div>
+    <div class="section" id="level-6">6</div>
 </div>
 <div class="pagination">
-    <div class="page"><a href="#">1</a></div>
-    <div class="page"><a href="#">2</a></div>
-    <div class="page"><a href="#">3</a></div>
-    <div class="page"><a href="#">4</a></div>
-    <div class="page"><a href="#">5</a></div>
-    <div class="page"><a href="#">6</a></div>
+    <div class="page">1</div>
+    <div class="page">2</div>
+    <div class="page">3</div>
+    <div class="page">4</div>
+    <div class="page">5</div>
+    <div class="page">28</div>
+    <div class="page">29</div>
+    <div class="page">30</div>
 </div>
 <div class="word-wrapper">
     ${renderWords(dataWords)}
@@ -112,10 +119,15 @@ export const renderBookPage = (): void => {
     renderPageContent(content);
 };
 
-export function listenBookPage(): void {
-    const card = document.querySelector('.word-wrapper') as HTMLElement;
+async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {
+    const dataWords: Word[] = await getChunkWords(group, page);
+    wordWrapper.innerHTML = renderWords(dataWords);
+}
 
-    card.addEventListener('click', (event: Event) => {
+export function listenBookPage(): void {
+    const wordWrapper = document.querySelector('.word-wrapper') as HTMLElement;
+
+    wordWrapper.addEventListener('click', (event: Event) => {
         const currentItem = event.target as HTMLElement;
         const card = currentItem.closest('.card') as HTMLElement;
         const currentId: string = card.id;
@@ -135,6 +147,30 @@ export function listenBookPage(): void {
             setTimeout(() => {
                 audio3.play();
             }, time3);
+        }
+    });
+
+    const sections = document.querySelector('.sections') as HTMLElement;
+    sections.addEventListener(
+        'click',
+        async (event: Event): Promise<void> => {
+            const currentItem = event.target as HTMLElement;
+
+            if (currentItem.classList.contains('section')) {
+                group = +currentItem.innerHTML;
+                updateWordsOnPage(wordWrapper, group, page);
+            }
+        }
+    );
+
+    const pagination = document.querySelector('.pagination') as HTMLElement;
+
+    pagination.addEventListener('click', (event: Event) => {
+        const currentItem = event.target as HTMLElement;
+
+        if (currentItem.classList.contains('page')) {
+            page = +currentItem.innerHTML;
+            updateWordsOnPage(wordWrapper, group, page);
         }
     });
 }
