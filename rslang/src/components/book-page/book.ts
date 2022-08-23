@@ -10,6 +10,8 @@ const renderWord = (
     wordTranslate: string,
     image: string,
     audio: string,
+    audioMeaning: string,
+    audioExample: string,
     textMeaning: string,
     textMeaningTranslate: string,
     textExample: string,
@@ -22,8 +24,14 @@ const renderWord = (
         <div class="word">${word}</div>
         <div class="transcription">${transcription}</div>
         <div class="sound">
-        <audio id="audio-${id}">
+        <audio id="audio-${id}">    
             <source src="${path}/${audio}" type="audio/mpeg">
+        </audio>
+        <audio id="audio2-${id}">    
+            <source src="${path}/${audioMeaning}" type="audio/mpeg">
+        </audio>
+        <audio id="audio3-${id}">    
+            <source src="${path}/${audioExample}" type="audio/mpeg">
         </audio>
             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -65,6 +73,8 @@ const renderWords = (currentWords: Word[]) =>
                     word.wordTranslate,
                     word.image,
                     word.audio,
+                    word.audioMeaning,
+                    word.audioExample,
                     word.textMeaning,
                     word.textMeaningTranslate,
                     word.textExample,
@@ -110,10 +120,21 @@ export function listenBookPage(): void {
         const card = currentItem.closest('.card') as HTMLElement;
         const currentId: string = card.id;
         const audio = document.querySelector(`#audio-${currentId}`) as HTMLAudioElement;
+        const audio2 = document.querySelector(`#audio2-${currentId}`) as HTMLAudioElement;
+        const audio3 = document.querySelector(`#audio3-${currentId}`) as HTMLAudioElement;
+
+        const time1: number = audio.duration * 1000;
+        const time2: number = audio2.duration * 1000;
+        const time3: number = time1 + time2;
 
         if (currentItem.closest('.sound')) {
-            console.log(currentItem.closest('.sound'));
             audio.play();
+            setTimeout(() => {
+                audio2.play();
+            }, time1);
+            setTimeout(() => {
+                audio3.play();
+            }, time3);
         }
     });
 }
