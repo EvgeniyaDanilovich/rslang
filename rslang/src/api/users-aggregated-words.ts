@@ -1,7 +1,18 @@
 import { path, token } from '../index';
 
-export async function getAllAggregatedWords() {
-    // не разобрался что должно здесь быть
+export async function getAllAggregatedWords(userId: string, group: number, page: number, wordsPerPage: number) {
+    const rawResponse = await fetch(
+        `${path}/users/${userId}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        }
+    );
+    const content = await rawResponse.json();
+    return content;
 }
 
 export async function getAggregatedWordById(userId: string, wordId: string) {

@@ -1,0 +1,117 @@
+.audio-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audio-card {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    height: 300px;
+    border: solid rgb(100, 100, 100) 1px;
+    background-color: rgb(243, 243, 243);
+    border-radius: 20px;
+}
+
+.audio-card > div,
+.audio-card > button {
+    margin: 40px 0 40px 0;
+}
+
+.block-answer {
+    height: 50px;
+    width: 50px;
+    border: solid blue 1px;
+    border-radius: 25px;
+}
+
+.block-words {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    width: 60%;
+}
+
+.word-audio {
+    font-size: 20px;
+}
+
+.word-answer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid grey 1px;
+    height: 30px;
+    line-height: 0;
+    padding: 0 10px 0 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.word-answer:hover {
+    background-color: rgb(163, 225, 209);
+}
+
+.difficult-window {
+    height: 160px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.select-level {
+    font-size: 30px;
+}
+
+.container-level button {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin: 0 5px 0 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.container-level button:hover {
+    background-color: rgb(163, 225, 209);
+}
+
+.button-next {
+    cursor: pointer;
+}
+
+.audio-result {
+    width: 400px;
+    background-color: rgb(243, 243, 243);
+    border-radius: 20px;
+    border: solid rgb(100, 100, 100) 1px;
+    padding-bottom: 30px;
+}
+
+.header {
+    font-size: 24px;
+    text-align: center;
+    margin: 20px 0 20px 0;
+}
+
+.result-true {
+    color: rgb(0, 175, 0);
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.result-false {
+    color: rgb(200, 0, 0);
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 5px;
+}
