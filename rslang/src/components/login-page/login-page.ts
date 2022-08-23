@@ -3,6 +3,8 @@ import { loginUser } from '../../api/sign-in';
 import { User } from '../../models/types';
 import { Auth } from '../../models/types';
 import { addToLocalStorageUser } from '../../utils/localstorage';
+import { addToLocalStorageToken } from '../../utils/localstorage';
+import { createUser } from '../../api/users';
 
 function renderLoginPopUp(): void {
     const popUp = document.createElement('div');
@@ -47,7 +49,7 @@ function renderRegisterPopUp(event: MouseEvent) {
     }
 }
 
-function signIn(event: MouseEvent) {
+async function signIn(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('sign-in-btn')) {
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
@@ -62,9 +64,11 @@ function signIn(event: MouseEvent) {
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
         addToLocalStorageUser(dataUser);
-
-        const token = loginUser(dataUser);
-        console.log(token);
+        //create user
+        if (document.querySelector('.name-input')) {
+            const user = await createUser(dataUser);
+            console.log(user);
+        }
     }
 }
 
