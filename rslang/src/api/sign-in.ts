@@ -1,4 +1,4 @@
-import { path } from '../index';
+import { path } from '../utils/common';
 import { User } from '../models/types';
 
 export async function loginUser(user: User) {

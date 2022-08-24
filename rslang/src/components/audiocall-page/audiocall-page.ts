@@ -1,7 +1,7 @@
 import { renderPageContent } from '../../utils/ui';
 import { getRandomNum } from '../../utils/getRandomNum';
 import { getAllAggregatedWords } from '../../api/users-aggregated-words';
-import { path } from '../../index';
+import { path, contentDifficult } from '../../utils/common';
 import { Word } from '../../models/types';
 import './audiocall-page.scss';
 
@@ -14,27 +14,12 @@ export const renderAudiocallPage = (): void => {
     const arrTrueWord: Word[] = [];
     const arrFalseWord: Word[] = [];
 
-    const contentDifficult = `
-        <div class="audio-content">
-            <div class="difficult-window">
-                <p class="select-level">Select the Level:</p>
-                <div class="container-level">
-                    <button class="button-level" data-id="1">1</button>
-                    <button class="button-level" data-id="2">2</button>
-                    <button class="button-level" data-id="3">3</button>
-                    <button class="button-level" data-id="4">4</button>
-                    <button class="button-level" data-id="5">5</button>
-                    <button class="button-level" data-id="6">6</button>
-                </div>
-            </div>
-        </div>
-    `;
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
 
     //---------- make a choice of difficulty level and run the first card ----------//
 
-    function selectLevel(EO: Event) {
+    function selectLevel(EO: Event): void {
         levelDifficult = Number((EO.target as HTMLElement).dataset.id);
         playCard();
     }
@@ -50,19 +35,27 @@ export const renderAudiocallPage = (): void => {
         const words = getAllAggregatedWords('62fec0ef3a51c600162caa6c', levelDifficult, getRandomNum(0, 119), 5);
         let arrWords = await words;
         arrWords = arrWords[0].paginatedResults;
-        const currentWord = arrWords[getRandomNum(0, 4)];
+        const currentWord: Word = arrWords[getRandomNum(0, 4)];
         currentWordActive = currentWord;
         console.log(currentWord);
         const contentGame = `
-        <div class="audio-content">
+        <div class="game-content">
             <div class="audio-card">
-                <div class="word-audio" data-word="${currentWord['word']}">(audio: ${currentWord['word']})</div>
+                <div class="word-audio" data-word="${currentWord['wordTranslate']}">
+                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.0"  width="60" height="60" viewBox="0 0 75 75">
+                    <path d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z"
+                    style="stroke:#111;stroke-width:5;stroke-linejoin:round;fill:#111;"
+                    />
+                    <path d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6" style="fill:none;stroke:#111;stroke-width:5;stroke-linecap:round"/>
+                    </svg>
+                </div>
                 <div class="block-words">
-                    <div class="word-answer">${arrWords[0].word}</div>
-                    <div class="word-answer">${arrWords[1].word}</div>
-                    <div class="word-answer">${arrWords[2].word}</div>
-                    <div class="word-answer">${arrWords[3].word}</div>
-                    <div class="word-answer">${arrWords[4].word}</div>
+                    <div class="word-answer">${arrWords[0].wordTranslate}</div>
+                    <div class="word-answer">${arrWords[1].wordTranslate}</div>
+                    <div class="word-answer">${arrWords[2].wordTranslate}</div>
+                    <div class="word-answer">${arrWords[3].wordTranslate}</div>
+                    <div class="word-answer">${arrWords[4].wordTranslate}</div>
                 </div>
                 <button class="button-next">NEXT</button>
             </div>
@@ -72,11 +65,12 @@ export const renderAudiocallPage = (): void => {
         playAudio();
         document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
         document.querySelector('.button-next')?.addEventListener('click', playCard);
+        document.querySelector('.word-audio')?.addEventListener('click', () => playAudio);
     }
 
     //---------- play audio word ----------//
-    
-    function playAudio() {
+
+    function playAudio(audio?: string): void {
         const audioElement = new Audio();
         audioElement.src = `${path}/${currentWordActive.audio}`;
         console.log(audioElement);
@@ -85,7 +79,7 @@ export const renderAudiocallPage = (): void => {
 
     //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
 
-    function comparsionWords(EO: Event) {
+    function comparsionWords(EO: Event): void {
         if (
             (EO.target as HTMLElement).innerText !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
         ) {
@@ -100,15 +94,15 @@ export const renderAudiocallPage = (): void => {
 
     //-------------------- create and display result window --------------------//
 
-    function showResult() {
+    function showResult(): void {
         const resTrue = arrTrueWord.reduce((res, el) => {
-            return (res += `<p class="result-true">${el.word}</p>`);
+            return (res += `<p class="result-true">${el.word} - ${el.wordTranslate}</p>`);
         }, '');
         const resFalse = arrFalseWord.reduce((res, el) => {
-            return (res += `<p class="result-false">${el.word}</p>`);
+            return (res += `<p class="result-false">${el.word} - ${el.wordTranslate}</p>`);
         }, '');
         const contentResult = `
-        <div class="audio-content">
+        <div class="game-content">
             <div class="audio-result">
                 <p class="header">Wrong answers:</p>
                 <div class="result-false-words">

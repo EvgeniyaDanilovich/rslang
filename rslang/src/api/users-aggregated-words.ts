@@ -1,4 +1,5 @@
-import { path, token } from '../index';
+import { token } from '../index';
+import { path } from '../utils/common';
 
 export async function getAllAggregatedWords(userId: string, group: number, page: number, wordsPerPage: number) {
     const rawResponse = await fetch(
