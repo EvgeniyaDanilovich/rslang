@@ -1,4 +1,5 @@
-import { path, token } from '../index';
+import { token } from '../index';
+import { path } from '../utils/common';
 import { UserWord } from '../models/types';
 
 export async function getAllUserWords(userId: string) {
