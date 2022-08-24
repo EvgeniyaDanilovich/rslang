@@ -1,4 +1,5 @@
-import { path, token } from '../index';
+import { token } from '../index';
+import { path } from '../utils/common';
 
 export async function getStatistic(userId: string) {
     const rawResponse = await fetch(`${path}/users/${userId}/statistics`, {
