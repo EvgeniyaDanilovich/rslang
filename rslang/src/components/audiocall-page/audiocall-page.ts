@@ -1,6 +1,7 @@
 import { renderPageContent } from '../../utils/ui';
 import { getRandomNum } from '../../utils/getRandomNum';
 import { getAllAggregatedWords } from '../../api/users-aggregated-words';
+import { path } from '../../index';
 import { Word } from '../../models/types';
 import './audiocall-page.scss';
 
@@ -8,7 +9,7 @@ import './audiocall-page.scss';
 
 export const renderAudiocallPage = (): void => {
     let levelDifficult: number;
-    let currentWordSelect: Word;
+    let currentWordActive: Word;
     let countCard = 0;
     const arrTrueWord: Word[] = [];
     const arrFalseWord: Word[] = [];
@@ -41,11 +42,17 @@ export const renderAudiocallPage = (): void => {
     //-------------------- create card --------------------//
 
     async function playCard(): Promise<void> {
+        countCard++;
+        if (countCard > 10) {
+            showResult();
+            return;
+        }
         const words = getAllAggregatedWords('62fec0ef3a51c600162caa6c', levelDifficult, getRandomNum(0, 119), 5);
         let arrWords = await words;
         arrWords = arrWords[0].paginatedResults;
         const currentWord = arrWords[getRandomNum(0, 4)];
-        currentWordSelect = currentWord;
+        currentWordActive = currentWord;
+        console.log(currentWord);
         const contentGame = `
         <div class="audio-content">
             <div class="audio-card">
@@ -62,8 +69,18 @@ export const renderAudiocallPage = (): void => {
         </div>
         `;
         renderPageContent(contentGame);
+        playAudio();
         document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
         document.querySelector('.button-next')?.addEventListener('click', playCard);
+    }
+
+    //---------- play audio word ----------//
+    
+    function playAudio() {
+        const audioElement = new Audio();
+        audioElement.src = `${path}/${currentWordActive.audio}`;
+        console.log(audioElement);
+        audioElement.play();
     }
 
     //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -73,16 +90,12 @@ export const renderAudiocallPage = (): void => {
             (EO.target as HTMLElement).innerText !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
         ) {
             (EO.target as HTMLElement).style.cssText = 'background-color: red; color: white';
-            arrFalseWord.push(currentWordSelect);
+            arrFalseWord.push(currentWordActive);
         } else {
             (EO.target as HTMLElement).style.cssText = 'background-color: green; color: white';
-            arrTrueWord.push(currentWordSelect);
+            arrTrueWord.push(currentWordActive);
         }
         document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
-        countCard++;
-        if (countCard === 10) {
-            showResult();
-        }
     }
 
     //-------------------- create and display result window --------------------//

@@ -8,7 +8,7 @@ import { loginUser } from './api/sign-in'; //после проверки уда�
 
 const path = 'https://rslangforrsschool.herokuapp.com';
 const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZmVjMGVmM2E1MWM2MDAxNjJjYWE2YyIsImlhdCI6MTY2MTI5MTE4OCwiZXhwIjoxNjYxMzA1NTg4fQ.zD7p2fmHA33bV7gtSDL4f89ZyqFYCvpbjNwqMLX_bOw';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZmVjMGVmM2E1MWM2MDAxNjJjYWE2YyIsImlhdCI6MTY2MTM1OTQ1OSwiZXhwIjoxNjYxMzczODU5fQ.MWaUdSRHsH2mKnJBNEUUmXU7t8U3ksOe1fx3tsez8m8';
 const refreshToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZmZkZDZiMzZhZWM4MDAxNjMyNTkzYSIsInRva2VuSWQiOiJhMDNjYjY3Ny1iOGZjLTQ2YTItYTQ3YS04MTRiNDMwNWVjNDAiLCJpYXQiOjE2NjA5MzU2ODgsImV4cCI6MTY2MDk1MTg4OH0.x8PgsdZyJ-1i7DgDMWiyqqkfv5JCOWKxnuENck04gBM';
 
