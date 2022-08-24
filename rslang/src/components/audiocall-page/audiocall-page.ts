@@ -1,7 +1,7 @@
 import { renderPageContent } from '../../utils/ui';
-import { getRandomNum } from '../../utils/getRandomNum';
+import { getRandomNum } from '../../utils/common';
 import { getAllAggregatedWords } from '../../api/users-aggregated-words';
-import { path, contentDifficult } from '../../utils/common';
+import { path, contentDifficult } from '../../utils/constants';
 import { Word } from '../../models/types';
 import './audiocall-page.scss';
 
@@ -65,7 +65,7 @@ export const renderAudiocallPage = (): void => {
         playAudio();
         document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
         document.querySelector('.button-next')?.addEventListener('click', playCard);
-        document.querySelector('.word-audio')?.addEventListener('click', () => playAudio);
+        document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
     }
 
     //---------- play audio word ----------//
