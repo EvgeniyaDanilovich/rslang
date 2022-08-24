@@ -1,7 +1,7 @@
 import './style.scss';
 import { router } from './utils/router';
 
-// require('./img/rs_school_js.svg');
+require('./img/rs_school_js.svg');
 
 // для проверки:
 const path = 'https://rslangforrsschool.herokuapp.com';

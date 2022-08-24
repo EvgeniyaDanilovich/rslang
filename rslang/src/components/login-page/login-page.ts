@@ -2,8 +2,8 @@ import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
 import { User } from '../../models/types';
 import { Auth } from '../../models/types';
-import { addToLocalStorageUser } from '../../utils/localstorage';
-import { addToLocalStorageToken } from '../../utils/localstorage';
+import { addToLocalStorage } from '../../utils/localstorage';
+// import { addToLocalStorageToken } from '../../utils/localstorage';
 import { createUser } from '../../api/users';
 
 function renderLoginPopUp(): void {
@@ -63,7 +63,7 @@ async function signIn(event: MouseEvent) {
         }
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
-        addToLocalStorageUser(dataUser);
+        addToLocalStorage('name', dataUser.name);
         //create user
         if (document.querySelector('.name-input')) {
             const user = await createUser(dataUser);

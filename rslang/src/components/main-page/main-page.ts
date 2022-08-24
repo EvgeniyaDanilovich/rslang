@@ -1,9 +1,9 @@
 import './main-page.scss';
-// require('./img/7.svg');
-// require('./img/6.svg');
-// require('./img/igor.jpeg');
-// require('./img/eugenia.jpeg');
-// require('./img/darya.jpeg');
+require('../../img/7.svg');
+require('../../img/6.svg');
+require('../../img/igor.jpeg');
+require('../../img/eugenia.jpg');
+require('../../img/darya.jpg');
 
 export const mainPageHtml = `
 <div class="description">
@@ -42,7 +42,7 @@ export const mainPageHtml = `
             </div>
         </div>
         <div class="developer">
-            <img class="developer-img" src="img/eugenia.jpeg" alt="Eugenia">
+            <img class="developer-img" src="img/eugenia.jpg" alt="Eugenia">
             <div class="developer-description">
                 <p class="name">Evgeniya Danilovich</p>
                 <p class="developer-contribution">Front-end Developer</p>
@@ -51,7 +51,7 @@ export const mainPageHtml = `
             </div>
         </div>
         <div class="developer">
-            <img class="developer-img" src="img/darya.jpeg" alt="Darya">
+            <img class="developer-img" src="img/darya.jpg" alt="Darya">
             <div class="developer-description">
                 <p class="name">Darya Kazharnovich</p>
                 <p class="developer-contribution">Front-end Developer</p>
