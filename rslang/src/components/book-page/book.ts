@@ -95,22 +95,22 @@ export const renderBookPage = (): void => {
 </div>
 <div class="sections">
     <div >Level:</div>
-    <div class="section" id="level-1">1</div>
-    <div class="section" id="level-2">2</div>
-    <div class="section" id="level-3">3</div>
-    <div class="section" id="level-4">4</div>
-    <div class="section" id="level-5">5</div>
-    <div class="section" id="level-6">6</div>
+    <div class="section" id="level-1" data-level="0">1</div>
+    <div class="section" id="level-2" data-level="1">2</div>
+    <div class="section" id="level-3" data-level="2">3</div>
+    <div class="section" id="level-4" data-level="3">4</div>
+    <div class="section" id="level-5" data-level="4">5</div>
+    <div class="section" id="level-6" data-level="5">6</div>
 </div>
 <div class="pagination">
-    <div class="page">1</div>
-    <div class="page">2</div>
-    <div class="page">3</div>
-    <div class="page">4</div>
-    <div class="page">5</div>
-    <div class="page">28</div>
-    <div class="page">29</div>
-    <div class="page">30</div>
+    <div class="page" data-page="0">1</div>
+    <div class="page" data-page="1">2</div>
+    <div class="page" data-page="2">3</div>
+    <div class="page" data-page="3">4</div>
+    <div class="page" data-page="4">5</div>
+    <div class="page" data-page="27">28</div>
+    <div class="page" data-page="28">29</div>
+    <div class="page" data-page="29">30</div>
 </div>
 <div class="word-wrapper">
     ${renderWords(dataWords)}
@@ -151,17 +151,14 @@ export function listenBookPage(): void {
     });
 
     const sections = document.querySelector('.sections') as HTMLElement;
-    sections.addEventListener(
-        'click',
-        async (event: Event): Promise<void> => {
-            const currentItem = event.target as HTMLElement;
+    sections.addEventListener('click', (event: Event): void => {
+        const currentItem = event.target as HTMLElement;
 
-            if (currentItem.classList.contains('section')) {
-                group = +currentItem.innerHTML;
-                updateWordsOnPage(wordWrapper, group, page);
-            }
+        if (currentItem.classList.contains('section')) {
+            group = Number(currentItem.dataset.level);
+            updateWordsOnPage(wordWrapper, group, page);
         }
-    );
+    });
 
     const pagination = document.querySelector('.pagination') as HTMLElement;
 
@@ -169,7 +166,7 @@ export function listenBookPage(): void {
         const currentItem = event.target as HTMLElement;
 
         if (currentItem.classList.contains('page')) {
-            page = +currentItem.innerHTML;
+            page = Number(currentItem.dataset.page);
             updateWordsOnPage(wordWrapper, group, page);
         }
     });
