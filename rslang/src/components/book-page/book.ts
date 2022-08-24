@@ -1,7 +1,11 @@
-import { dataWords } from '../../api/words';
+import { dataWords, getChunkWords, path } from '../../api/words';
+import { WordsDifficultyLevel } from '../../enums/levels';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
+
+let page = 1;
+let group = 1;
 
 const renderWord = (
     id: string,
@@ -9,18 +13,30 @@ const renderWord = (
     transcription: string,
     wordTranslate: string,
     image: string,
+    audio: string,
+    audioMeaning: string,
+    audioExample: string,
     textMeaning: string,
     textMeaningTranslate: string,
     textExample: string,
     textExampleTranslate: string
 ) =>
     `<div class="card" id="${id}">
-<div class="card__img"><img src="${image}" alt=""></div>
+<div class="card__img"><img src="${path}/${image}" alt=""></div>
 <div class="card__info">
     <div class="card-header">
         <div class="word">${word}</div>
         <div class="transcription">${transcription}</div>
         <div class="sound">
+        <audio id="audio-${id}">    
+            <source src="${path}/${audio}" type="audio/mpeg">
+        </audio>
+        <audio id="audio2-${id}">    
+            <source src="${path}/${audioMeaning}" type="audio/mpeg">
+        </audio>
+        <audio id="audio3-${id}">    
+            <source src="${path}/${audioExample}" type="audio/mpeg">
+        </audio>
             <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <style>
@@ -60,6 +76,9 @@ const renderWords = (currentWords: Word[]) =>
                     word.transcription,
                     word.wordTranslate,
                     word.image,
+                    word.audio,
+                    word.audioMeaning,
+                    word.audioExample,
                     word.textMeaning,
                     word.textMeaningTranslate,
                     word.textExample,
@@ -75,24 +94,80 @@ export const renderBookPage = (): void => {
     <div class="game"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
-    <div class="section"><a href="#">1</a></div>
-    <div class="section"><a href="#">2</a></div>
-    <div class="section"><a href="#">3</a></div>
-    <div class="section"><a href="#">4</a></div>
-    <div class="section"><a href="#">5</a></div>
-    <div class="section"><a href="#">6</a></div>
+    <div >Level:</div>
+    <div class="section" id="level-1" data-level="0">1</div>
+    <div class="section" id="level-2" data-level="1">2</div>
+    <div class="section" id="level-3" data-level="2">3</div>
+    <div class="section" id="level-4" data-level="3">4</div>
+    <div class="section" id="level-5" data-level="4">5</div>
+    <div class="section" id="level-6" data-level="5">6</div>
 </div>
 <div class="pagination">
-    <div class="page"><a href="#">1</a></div>
-    <div class="page"><a href="#">2</a></div>
-    <div class="page"><a href="#">3</a></div>
-    <div class="page"><a href="#">4</a></div>
-    <div class="page"><a href="#">5</a></div>
-    <div class="page"><a href="#">6</a></div>
+    <div class="page" data-page="0">1</div>
+    <div class="page" data-page="1">2</div>
+    <div class="page" data-page="2">3</div>
+    <div class="page" data-page="3">4</div>
+    <div class="page" data-page="4">5</div>
+    <div class="page" data-page="27">28</div>
+    <div class="page" data-page="28">29</div>
+    <div class="page" data-page="29">30</div>
 </div>
-${renderWords(dataWords)}`;
+<div class="word-wrapper">
+    ${renderWords(dataWords)}
+</div>`;
 
     renderPageContent(content);
 };
 
-// ${renderWords(dataWords)}
+async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {
+    const dataWords: Word[] = await getChunkWords(group, page);
+    wordWrapper.innerHTML = renderWords(dataWords);
+}
+
+export function listenBookPage(): void {
+    const wordWrapper = document.querySelector('.word-wrapper') as HTMLElement;
+
+    wordWrapper.addEventListener('click', (event: Event) => {
+        const currentItem = event.target as HTMLElement;
+        const card = currentItem.closest('.card') as HTMLElement;
+        const currentId: string = card.id;
+        const audio = document.querySelector(`#audio-${currentId}`) as HTMLAudioElement;
+        const audio2 = document.querySelector(`#audio2-${currentId}`) as HTMLAudioElement;
+        const audio3 = document.querySelector(`#audio3-${currentId}`) as HTMLAudioElement;
+
+        const time1: number = audio.duration * 1000;
+        const time2: number = audio2.duration * 1000;
+        const time3: number = time1 + time2;
+
+        if (currentItem.closest('.sound')) {
+            audio.play();
+            setTimeout(() => {
+                audio2.play();
+            }, time1);
+            setTimeout(() => {
+                audio3.play();
+            }, time3);
+        }
+    });
+
+    const sections = document.querySelector('.sections') as HTMLElement;
+    sections.addEventListener('click', (event: Event): void => {
+        const currentItem = event.target as HTMLElement;
+
+        if (currentItem.classList.contains('section')) {
+            group = Number(currentItem.dataset.level);
+            updateWordsOnPage(wordWrapper, group, page);
+        }
+    });
+
+    const pagination = document.querySelector('.pagination') as HTMLElement;
+
+    pagination.addEventListener('click', (event: Event) => {
+        const currentItem = event.target as HTMLElement;
+
+        if (currentItem.classList.contains('page')) {
+            page = Number(currentItem.dataset.page);
+            updateWordsOnPage(wordWrapper, group, page);
+        }
+    });
+}
