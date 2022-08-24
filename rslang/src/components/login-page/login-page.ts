@@ -29,7 +29,10 @@ function renderLoginPopUp(): void {
 }
 
 function closePopUp(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('overlay')) {
+    if (
+        (event.target as HTMLElement).classList.contains('overlay') ||
+        (event.target as HTMLElement).classList.contains('sign-in-btn')
+    ) {
         const popUp = document.querySelector('.pop-up-wrapper');
         const overlay = document.querySelector('.overlay');
         if (popUp !== null) popUp.remove();
@@ -69,6 +72,7 @@ async function signIn(event: MouseEvent) {
             const user = await createUser(dataUser);
             console.log(user);
         }
+        closePopUp(event);
     }
 }
 
