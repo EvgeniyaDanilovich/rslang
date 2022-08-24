@@ -63,11 +63,20 @@ async function signIn(event: MouseEvent) {
         }
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
-        addToLocalStorage('name', dataUser.name);
         //create user
         if (document.querySelector('.name-input')) {
             const user = await createUser(dataUser);
             console.log(user);
+            // addToLocalStorage('id', user.id);
+            const logIn = await loginUser(dataUser);
+            addToLocalStorage('token', logIn.token);
+            addToLocalStorage('id', logIn.userId);
+            addToLocalStorage('refreshToken', logIn.refreshToken);
+        } else {
+            const logIn = await loginUser(dataUser);
+            addToLocalStorage('token', logIn.token);
+            addToLocalStorage('id', logIn.userId);
+            addToLocalStorage('refreshToken', logIn.refreshToken);
         }
     }
 }

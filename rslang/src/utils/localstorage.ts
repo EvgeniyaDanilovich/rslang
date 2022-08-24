@@ -3,7 +3,7 @@ export function addToLocalStorage(key: string, data: string) {
     if (keys !== null) {
         localStorage.setItem(`${key}`, `${data}`);
     } else {
-        localStorage.clear();
+        localStorage.removeItem(`${key}`);
         localStorage.setItem(`${key}`, `${data}`);
     }
 }
