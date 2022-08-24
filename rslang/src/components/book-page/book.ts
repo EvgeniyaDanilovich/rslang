@@ -1,6 +1,6 @@
-import { dataWords, getChunkWords, path } from '../../api/words';
-import { WordsDifficultyLevel } from '../../enums/levels';
+import { dataWords, getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
+import { path } from '../../utils/common';
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
 
