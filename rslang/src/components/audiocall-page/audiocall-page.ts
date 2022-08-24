@@ -37,7 +37,6 @@ export const renderAudiocallPage = (): void => {
         arrWords = arrWords[0].paginatedResults;
         const currentWord: Word = arrWords[getRandomNum(0, 4)];
         currentWordActive = currentWord;
-        console.log(currentWord);
         const contentGame = `
         <div class="game-content">
             <div class="audio-card">
@@ -73,7 +72,6 @@ export const renderAudiocallPage = (): void => {
     function playAudio(audio?: string): void {
         const audioElement = new Audio();
         audioElement.src = `${path}/${currentWordActive.audio}`;
-        console.log(audioElement);
         audioElement.play();
     }
 

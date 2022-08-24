@@ -54,7 +54,6 @@ export async function deleteUser(userId: string) {
 }
 
 export async function getNewUserToken(userId: string) {
-    console.log(refreshToken);
     const rawResponse = await fetch(`${path}/users/${userId}/tokens`, {
         method: 'GET',
         headers: {
