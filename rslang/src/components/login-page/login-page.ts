@@ -33,6 +33,7 @@ function closePopUp(event: MouseEvent) {
         const overlay = document.querySelector('.overlay');
         if (popUp !== null) popUp.remove();
         if (overlay !== null) overlay.remove();
+        document.body.style.overflow = 'visible'
     }
 }
 
