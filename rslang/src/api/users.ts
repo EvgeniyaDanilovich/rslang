@@ -1,4 +1,5 @@
-import { path, token, refreshToken } from '../index';
+import { token, refreshToken } from '../index';
+import { path } from '../utils/common';
 import { User } from '../models/types';
 
 export async function createUser(user: User) {
