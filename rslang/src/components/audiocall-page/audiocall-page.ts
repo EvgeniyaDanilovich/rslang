@@ -1,5 +1,4 @@
-import { renderPageContent } from '../../utils/ui';
-import { getRandomNum } from '../../utils/common';
+import { getRandomNum, renderPageContent } from '../../utils/common';
 import { getAllAggregatedWords } from '../../api/users-aggregated-words';
 import { path, contentDifficult, svgImage } from '../../utils/constants';
 import { Word } from '../../models/types';
