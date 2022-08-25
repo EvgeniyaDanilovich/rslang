@@ -1,4 +1,4 @@
-import { path } from '../utils/common';
+import { path } from '../utils/constants';
 
 export async function getChunkWords(group: number, page: number) {
     const rawResponse = await fetch(`${path}/words?group=${group}&page=${page}`, {

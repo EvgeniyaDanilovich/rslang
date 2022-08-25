@@ -1,5 +1,5 @@
 import { token } from '../index';
-import { path } from '../utils/common';
+import { path } from '../utils/constants';
 
 export async function getSettings(userId: string) {
     const rawResponse = await fetch(`${path}/users/${userId}/settings`, {

@@ -1,7 +1,8 @@
 import { getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
-import { path } from '../../utils/common';
-import { renderPageContent } from '../../utils/ui';
+import { renderPageContent } from '../../utils/common';
+import { path } from '../../utils/constants';
+
 import './book.scss';
 
 function setLocalStorage(key: string, value: string) {
