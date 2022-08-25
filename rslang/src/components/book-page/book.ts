@@ -1,6 +1,7 @@
 import { dataWords, getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
-import { path } from '../../utils/common';
+import { path } from '../../utils/constants';
+
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
 
