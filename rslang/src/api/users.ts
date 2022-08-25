@@ -1,5 +1,5 @@
 import { token, refreshToken } from '../index';
-import { path } from '../utils/common';
+import { path } from '../utils/constants';
 import { User } from '../models/types';
 
 export async function createUser(user: User) {
@@ -54,7 +54,6 @@ export async function deleteUser(userId: string) {
 }
 
 export async function getNewUserToken(userId: string) {
-    console.log(refreshToken);
     const rawResponse = await fetch(`${path}/users/${userId}/tokens`, {
         method: 'GET',
         headers: {
