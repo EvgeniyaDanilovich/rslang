@@ -1,11 +1,21 @@
-import { dataWords, getChunkWords } from '../../api/words';
+import { getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
 import { path } from '../../utils/common';
 import { renderPageContent } from '../../utils/ui';
 import './book.scss';
 
-let page = 1;
-let group = 1;
+function setLocalStorage(key: string, value: string) {
+    localStorage.setItem(key, value);
+}
+
+function getLocalStorage(key: string): string | null {
+    return localStorage.getItem(key);
+}
+
+let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
+let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
+
+const dataWords = await getChunkWords(group, page);
 
 const renderWord = (
     id: string,
@@ -157,6 +167,7 @@ export function listenBookPage(): void {
         if (currentItem.classList.contains('section')) {
             group = Number(currentItem.dataset.level);
             updateWordsOnPage(wordWrapper, group, page);
+            setLocalStorage('group', `${group}`);
         }
     });
 
@@ -168,6 +179,7 @@ export function listenBookPage(): void {
         if (currentItem.classList.contains('page')) {
             page = Number(currentItem.dataset.page);
             updateWordsOnPage(wordWrapper, group, page);
+            setLocalStorage('page', `${page}`);
         }
     });
 }

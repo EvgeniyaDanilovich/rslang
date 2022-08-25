@@ -1,4 +1,3 @@
-import { dataWords } from './api/words';
 import './style.scss';
 import { router } from './utils/router';
 import { loginUser } from './api/sign-in'; //после проверки удалить
@@ -17,5 +16,3 @@ export { token, refreshToken };
 // loginUser({ email: 'bob@mail.com', password: '12345678' }).then((el) => console.log(el));
 
 router.resolve();
-
-console.log(dataWords);
