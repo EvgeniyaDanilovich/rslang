@@ -1,9 +1,8 @@
 import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
 import { User } from '../../models/types';
-import { Auth } from '../../models/types';
+// import { Auth } from '../../models/types';
 import { addToLocalStorage } from '../../utils/localstorage';
-// import { addToLocalStorageToken } from '../../utils/localstorage';
 import { createUser } from '../../api/users';
 
 function renderLoginPopUp(): void {
