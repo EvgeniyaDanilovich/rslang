@@ -2,7 +2,7 @@ import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
 import { User } from '../../models/types';
 // import { Auth } from '../../models/types';
-import { addToLocalStorage } from '../../utils/localstorage';
+import { addToLocalStorage } from '../../utils/common';
 import { createUser } from '../../api/users';
 
 function renderLoginPopUp(): void {
