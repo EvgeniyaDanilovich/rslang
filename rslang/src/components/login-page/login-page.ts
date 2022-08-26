@@ -1,7 +1,6 @@
 import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
-import { User } from '../../models/types';
-// import { Auth } from '../../models/types';
+import { Auth, User } from '../../models/types';
 import { addToLocalStorage } from '../../utils/common';
 import { createUser } from '../../api/users';
 
@@ -12,7 +11,7 @@ function renderLoginPopUp(): void {
             <h2>Log In</h2>
             <div class="inputs-container">
                 <input type="text" class="email-input" placeholder="E-mail">
-                <input type="text" class="password-input" placeholder="Password">
+                <input type="text" minlength="8" class="password-input" placeholder="Password">
             </div>
             <div class="log-button">
                 <button class="sign-in-btn">Sign In</button>
@@ -49,12 +48,60 @@ function renderRegisterPopUp(event: MouseEvent) {
     }
 }
 
+function addToLocalStorageKeys(data: Auth) {
+    addToLocalStorage('token', data.token);
+    addToLocalStorage('id', data.userId);
+    addToLocalStorage('refreshToken', data.refreshToken);
+}
+
+function signInResult(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.sign-in-btn')) {
+        const idInLocalStorage = localStorage.getItem('id');
+        if (idInLocalStorage !== null) {
+            const popUpWrapper = document.querySelector('.pop-up-wrapper');
+            if (popUpWrapper !== null)
+                popUpWrapper.innerHTML = `
+            <h2>Hi!</h2>
+            <h3>Have a good learning experience!</h3>
+            `;
+        }
+    }
+}
+
+function renderLogOut(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.authorization-btn') && localStorage.getItem('id') !== null) {
+        const popUpWrapper = document.querySelector('.pop-up-wrapper');
+        if (popUpWrapper !== null) {
+            popUpWrapper.innerHTML = `<button class="log-out-button">Log Out</button>`;
+        }
+    }
+}
+
+function LogOut(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.log-out-button')) {
+        localStorage.clear();
+        const popUpWrapper = document.querySelector('.pop-up-wrapper');
+        if (popUpWrapper !== null) {
+            popUpWrapper.innerHTML = `
+                <h2>Bye!</h2>
+                <h3>Сome back to us!</h3>
+                `;
+        }
+    }
+}
+
+function warning() {
+    const warning = `<div class="warning">Please fill in all the required fields</div>`;
+    const warningHTML = document.querySelector('.warning') as HTMLElement;
+    if (warningHTML !== null) warningHTML.remove();
+    (document.querySelector('.sign-in-btn') as HTMLElement).insertAdjacentHTML('beforebegin', warning);
+}
+
 async function signIn(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('sign-in-btn')) {
+    if ((event.target as HTMLElement).closest('.sign-in-btn')) {
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
         const inputPassword = document.querySelector('.password-input') as HTMLInputElement;
-        //add to localstorage dataUser
         const dataUser = {} as User;
         if (document.querySelector('.name-input') && inputName.value !== null) {
             dataUser.name = inputName.value;
@@ -63,25 +110,42 @@ async function signIn(event: MouseEvent) {
         }
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
-        //create user
+        const patternLogin = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (document.querySelector('.name-input')) {
-            const user = await createUser(dataUser);
-            console.log(user);
-            // addToLocalStorage('id', user.id);
-            const logIn = await loginUser(dataUser);
-            addToLocalStorage('token', logIn.token);
-            addToLocalStorage('id', logIn.userId);
-            addToLocalStorage('refreshToken', logIn.refreshToken);
+            if (
+                inputEmail.value === '' ||
+                inputPassword.value === '' ||
+                inputName.value === '' ||
+                inputPassword.value.length < 8 ||
+                patternLogin.test(inputEmail.value) === false
+            ) {
+                warning();
+            } else {
+                const user = await createUser(dataUser);
+                const logIn = await loginUser(dataUser);
+                addToLocalStorageKeys(logIn);
+            }
         } else {
-            const logIn = await loginUser(dataUser);
-            addToLocalStorage('token', logIn.token);
-            addToLocalStorage('id', logIn.userId);
-            addToLocalStorage('refreshToken', logIn.refreshToken);
+            if (
+                inputEmail.value === '' ||
+                inputPassword.value === '' ||
+                inputPassword.value.length < 8 ||
+                patternLogin.test(inputEmail.value) === false
+            ) {
+                warning();
+            } else {
+                const logIn = await loginUser(dataUser);
+                console.log(logIn);
+                addToLocalStorageKeys(logIn);
+            }
         }
+        signInResult(event);
     }
 }
 
 export function addEventListenerPopUp() {
+    document.addEventListener('click', renderLogOut);
+    document.addEventListener('click', LogOut);
     const loginButton = document.querySelector('.authorization-btn') as HTMLButtonElement;
     loginButton.addEventListener('click', renderLoginPopUp);
     document.addEventListener('click', closePopUp);
