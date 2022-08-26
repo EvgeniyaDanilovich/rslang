@@ -1,7 +1,6 @@
 import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
-import { User } from '../../models/types';
-// import { Auth } from '../../models/types';
+import { Auth, User } from '../../models/types';
 import { addToLocalStorage } from '../../utils/common';
 import { createUser } from '../../api/users';
 
@@ -33,7 +32,7 @@ function closePopUp(event: MouseEvent) {
         const overlay = document.querySelector('.overlay');
         if (popUp !== null) popUp.remove();
         if (overlay !== null) overlay.remove();
-        document.body.style.overflow = 'visible'
+        document.body.style.overflow = 'visible';
     }
 }
 
@@ -49,12 +48,55 @@ function renderRegisterPopUp(event: MouseEvent) {
     }
 }
 
+function addToLocalStorageKeys(data: Auth) {
+    addToLocalStorage('token', data.token);
+    addToLocalStorage('id', data.userId);
+    addToLocalStorage('refreshToken', data.refreshToken);
+}
+
+function signInResult(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.sign-in-btn')) {
+        const idInLocalStorage = localStorage.getItem('id');
+        console.log(idInLocalStorage);
+        if (idInLocalStorage !== null) {
+            const popUpWrapper = document.querySelector('.pop-up-wrapper');
+            if (popUpWrapper !== null)
+                popUpWrapper.innerHTML = `
+            <h2>Hi!</h2>
+            <h3>Have a good learning experience!</h3>
+            `;
+        }
+    }
+}
+
+function renderLogOut(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.authorization-btn') && localStorage.getItem('id') !== null) {
+        const popUpWrapper = document.querySelector('.pop-up-wrapper');
+        if (popUpWrapper !== null) {
+            popUpWrapper.innerHTML = `<button class="log-out-button">Log Out</button>`;
+        }
+    }
+}
+
+function LogOut(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.log-out-button')) {
+        localStorage.clear();
+        const popUpWrapper = document.querySelector('.pop-up-wrapper');
+        if (popUpWrapper !== null) {
+            popUpWrapper.innerHTML = `
+                <h2>Bye!</h2>
+                <h3>Сome back to us!</h3>
+                `;
+        }
+    }
+}
+
 async function signIn(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('sign-in-btn')) {
+        console.log('dc');
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
         const inputPassword = document.querySelector('.password-input') as HTMLInputElement;
-        //add to localstorage dataUser
         const dataUser = {} as User;
         if (document.querySelector('.name-input') && inputName.value !== null) {
             dataUser.name = inputName.value;
@@ -63,28 +105,26 @@ async function signIn(event: MouseEvent) {
         }
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
-        //create user
         if (document.querySelector('.name-input')) {
             const user = await createUser(dataUser);
             console.log(user);
-            // addToLocalStorage('id', user.id);
             const logIn = await loginUser(dataUser);
-            addToLocalStorage('token', logIn.token);
-            addToLocalStorage('id', logIn.userId);
-            addToLocalStorage('refreshToken', logIn.refreshToken);
+            addToLocalStorageKeys(logIn);
         } else {
             const logIn = await loginUser(dataUser);
-            addToLocalStorage('token', logIn.token);
-            addToLocalStorage('id', logIn.userId);
-            addToLocalStorage('refreshToken', logIn.refreshToken);
+            addToLocalStorageKeys(logIn);
         }
     }
 }
 
 export function addEventListenerPopUp() {
+    document.addEventListener('click', renderLogOut);
+    document.addEventListener('click', signInResult);
+    document.addEventListener('click', LogOut);
     const loginButton = document.querySelector('.authorization-btn') as HTMLButtonElement;
     loginButton.addEventListener('click', renderLoginPopUp);
     document.addEventListener('click', closePopUp);
     document.addEventListener('click', renderRegisterPopUp);
+    // document.addEventListener('click', signInResult);
     document.addEventListener('click', signIn);
 }

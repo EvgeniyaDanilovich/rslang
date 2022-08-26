@@ -70,11 +70,13 @@ p {
   color: #0E1317;
 }
 .authorization-btn {
-  background-color: #40959f;
+  background-color: inherit;
   border: none;
-  font-size: 16px;
-  padding: 5px 10px;
   cursor: pointer;
+}
+.login-img {
+  height: 4vh;
+  width: 4vw;
 }
 .main-container {
   flex: 1 1 auto;
