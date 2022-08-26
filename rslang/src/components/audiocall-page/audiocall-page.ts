@@ -8,6 +8,7 @@ import './audiocall-page.scss';
 let levelDifficult: number;
 let currentWordActive: Word;
 let countCard = 0;
+let arrWords: Word[] = [];
 const arrTrueWord: Word[] = [];
 const arrFalseWord: Word[] = [];
 
@@ -34,8 +35,8 @@ async function playCard(): Promise<void> {
         return;
     }
     const words = getAllAggregatedWords('62fec0ef3a51c600162caa6c', levelDifficult, getRandomNum(0, 119), 5);
-    let arrWords = await words;
-    arrWords = arrWords[0].paginatedResults;
+    const arrResponseWords = await words;
+    arrWords = arrResponseWords[0].paginatedResults;
     const currentWord: Word = arrWords[getRandomNum(0, 4)];
     currentWordActive = currentWord;
     const contentGame = `
@@ -76,9 +77,8 @@ function comparsionWords(EO: Event): void {
 //-------------------- create and display result window --------------------//
 
 function showResult(): void {
-    console.log(playAudio());
     const resTrue = arrTrueWord.reduce((res, el) => {
-        return (res += `<p class="result-true" onclick="playAudio('awd')">${svgImageSmall} ${el.word} - ${el.wordTranslate}</p>`);
+        return (res += `<p class="result-true">${svgImageSmall} ${el.word} - ${el.wordTranslate}</p>`);
     }, '');
     const resFalse = arrFalseWord.reduce((res, el) => {
         return (res += `<p class="result-false">${svgImageSmall} ${el.word} - ${el.wordTranslate}</p>`);
@@ -98,13 +98,31 @@ function showResult(): void {
     </div>
     `;
     renderPageContent(contentResult);
+    const arrSvgImage = document.querySelectorAll('.svg-image-small');
+    const sumArr = arrFalseWord.concat(arrTrueWord);
+
+    for (let i = 0; i <= sumArr.length; i++) {
+        arrSvgImage[i].addEventListener('click', () => playAudio(sumArr[i].audio));
+    }
+    // arrFalseWord.concat(arrTrueWord).forEach((el) => {
+    //     arrSvgImage.forEach((img) => {
+    //         console.log('add');
+    //         img.addEventListener('click', () => playAudio(el.audio));
+    //         return;
+    //     });
+    //     return;
+    // });
 }
 
 //---------- play audio word ----------//
 
-function playAudio(audio?: string): void {
-    console.log(String(audio));
+function playAudio(audios?: string): void {
     const audioElement = new Audio();
-    audioElement.src = `${path}/${currentWordActive.audio}`;
+    console.log(audios);
+    if (audios) {
+        audioElement.src = `${path}/${audios}`;
+    } else {
+        audioElement.src = `${path}/${currentWordActive.audio}`;
+    }
     audioElement.play();
 }

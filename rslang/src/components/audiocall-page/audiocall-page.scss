@@ -125,15 +125,17 @@
 .result-true {
     color: rgb(0, 175, 0);
     font-size: 20px;
-    text-align: center;
+    text-align: left;
     margin-bottom: 5px;
+    padding-left: 30px;
 }
 
 .result-false {
     color: rgb(200, 0, 0);
     font-size: 20px;
-    text-align: center;
+    text-align:left;
     margin-bottom: 5px;
+    padding-left: 30px;
 }
 
 .svg-image-small {
