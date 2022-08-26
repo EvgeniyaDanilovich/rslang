@@ -104,23 +104,14 @@ function showResult(): void {
     for (let i = 0; i <= sumArr.length; i++) {
         arrSvgImage[i].addEventListener('click', () => playAudio(sumArr[i].audio));
     }
-    // arrFalseWord.concat(arrTrueWord).forEach((el) => {
-    //     arrSvgImage.forEach((img) => {
-    //         console.log('add');
-    //         img.addEventListener('click', () => playAudio(el.audio));
-    //         return;
-    //     });
-    //     return;
-    // });
 }
 
 //---------- play audio word ----------//
 
-function playAudio(audios?: string): void {
+function playAudio(audioValue?: string): void {
     const audioElement = new Audio();
-    console.log(audios);
-    if (audios) {
-        audioElement.src = `${path}/${audios}`;
+    if (audioValue) {
+        audioElement.src = `${path}/${audioValue}`;
     } else {
         audioElement.src = `${path}/${currentWordActive.audio}`;
     }
