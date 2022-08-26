@@ -1,10 +1,11 @@
 import { getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/common';
-import { path } from '../../utils/constants';
+import { path, svgImage } from '../../utils/constants';
 
 import './book.scss';
 
+// function allBookPage() {
 function setLocalStorage(key: string, value: string) {
     localStorage.setItem(key, value);
 }
@@ -17,6 +18,16 @@ let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
 let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
 
 const dataWords = await getChunkWords(group, page);
+
+function addStatusButtons() {
+    const t = true;
+    if (t) {
+        return ` <div class="status">
+        <div class="status-btn hard">Hard</div>
+        <div class="status-btn like">Like</div>
+    </div>`;
+    }
+}
 
 const renderWord = (
     id: string,
@@ -48,25 +59,7 @@ const renderWord = (
         <audio id="audio3-${id}">    
             <source src="${path}/${audioExample}" type="audio/mpeg">
         </audio>
-            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <style>
-                        .cls-1 {
-                            fill: #101820;
-                        }
-                    </style>
-                </defs>
-                <title />
-                <g data-name="Layer 33" id="Layer_33">
-                    <path class="cls-1"
-                        d="M18,29a1,1,0,0,1-.57-.18l-10-7A1,1,0,0,1,7,21V11a1,1,0,0,1,.43-.82l10-7a1,1,0,0,1,1-.07A1,1,0,0,1,19,4V28a1,1,0,0,1-.54.89A1,1,0,0,1,18,29ZM9,20.48l8,5.6V5.92l-8,5.6Z" />
-                    <path class="cls-1"
-                        d="M8,22H4a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H8a1,1,0,0,1,1,1V21A1,1,0,0,1,8,22ZM4,12a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1H7V12Z" />
-                    <path class="cls-1" d="M18,21V19a3,3,0,0,0,2.12-5.12l1.42-1.42A5,5,0,0,1,18,21Z" />
-                    <path class="cls-1"
-                        d="M23.65,22.65a1,1,0,0,1-.7-.29A1,1,0,0,1,23,21a7,7,0,0,0,0-9.9,1,1,0,0,1,1.41-1.41,9,9,0,0,1,0,12.72A1,1,0,0,1,23.65,22.65Z" />
-                </g>
-            </svg>
+        ${svgImage}
         </div>
         <div class="translation">${wordTranslate}</div>
     </div>
@@ -74,6 +67,7 @@ const renderWord = (
     <div class="explain-translation">${textMeaningTranslate}</div>
     <div class="example">${textExample}</div>
     <div class="example-translation">${textExampleTranslate}</div>
+${addStatusButtons()}
 </div>
 </div>`;
 
@@ -98,6 +92,14 @@ const renderWords = (currentWords: Word[]) =>
         )
         .join()}`;
 
+const renderPage = (): string => {
+    const arr = [];
+    for (let i = 0; i < 30; i++) {
+        arr.push(`<div class="page" data-page="${i}">${i + 1}</div>`);
+    }
+    return arr.join(' ');
+};
+
 export const renderBookPage = (): void => {
     const content = `
     <div class="game-nav">
@@ -114,14 +116,7 @@ export const renderBookPage = (): void => {
     <div class="section" id="level-6" data-level="5">6</div>
 </div>
 <div class="pagination">
-    <div class="page" data-page="0">1</div>
-    <div class="page" data-page="1">2</div>
-    <div class="page" data-page="2">3</div>
-    <div class="page" data-page="3">4</div>
-    <div class="page" data-page="4">5</div>
-    <div class="page" data-page="27">28</div>
-    <div class="page" data-page="28">29</div>
-    <div class="page" data-page="29">30</div>
+  ${renderPage()}
 </div>
 <div class="word-wrapper">
     ${renderWords(dataWords)}
@@ -137,6 +132,11 @@ async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: 
 
 export function listenBookPage(): void {
     const wordWrapper = document.querySelector('.word-wrapper') as HTMLElement;
+    const sectionItems = document.querySelectorAll('.section') as NodeListOf<Element>;
+    const pageItems = document.querySelectorAll('.page') as NodeListOf<Element>;
+
+    sectionItems[group].classList.add('active');
+    pageItems[page].classList.add('active');
 
     wordWrapper.addEventListener('click', (event: Event) => {
         const currentItem = event.target as HTMLElement;
@@ -159,6 +159,19 @@ export function listenBookPage(): void {
                 audio3.play();
             }, time3);
         }
+
+        const t = true;
+        if (t) {
+            const currentCard = currentItem.closest('.card') as HTMLElement;
+            if (currentItem.closest('.like')) {
+                currentCard.classList.remove('selected-hard');
+                currentCard.classList.add('selected-like');
+            }
+            if (currentItem.closest('.hard')) {
+                currentCard.classList.remove('selected-like');
+                currentCard.classList.add('selected-hard');
+            }
+        }
     });
 
     const sections = document.querySelector('.sections') as HTMLElement;
@@ -166,6 +179,11 @@ export function listenBookPage(): void {
         const currentItem = event.target as HTMLElement;
 
         if (currentItem.classList.contains('section')) {
+            sectionItems.forEach((item) => {
+                item.classList.remove('active');
+            });
+            currentItem.classList.add('active');
+
             group = Number(currentItem.dataset.level);
             updateWordsOnPage(wordWrapper, group, page);
             setLocalStorage('group', `${group}`);
@@ -178,9 +196,22 @@ export function listenBookPage(): void {
         const currentItem = event.target as HTMLElement;
 
         if (currentItem.classList.contains('page')) {
+            pageItems.forEach((item) => {
+                item.classList.remove('active');
+            });
+            currentItem.classList.add('active');
+
             page = Number(currentItem.dataset.page);
             updateWordsOnPage(wordWrapper, group, page);
             setLocalStorage('page', `${page}`);
         }
     });
+
+    const t = true;
+
+    if (t) {
+        const subNavigate = document.querySelector('.game-nav') as HTMLElement;
+        const difficultWordsLink = `<div class="difficult"><a href="/difficult-words" data-navigo>Difficult words</a></div>`;
+        subNavigate.innerHTML += difficultWordsLink;
+    }
 }

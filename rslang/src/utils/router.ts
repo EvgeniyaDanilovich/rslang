@@ -16,4 +16,7 @@ router
     })
     .on('/audiocall', () => {
         renderAudiocallPage();
+    })
+    .on('/difficult-words', () => {
+        console.log('difficult-words');
     });
