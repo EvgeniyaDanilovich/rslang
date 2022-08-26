@@ -18,4 +18,9 @@ export { token, refreshToken };
 
 router.resolve();
 
+// рендер поп-апа
+
+import { addEventListenerPopUp } from '../src/components/login-page/login-page';
+addEventListenerPopUp();
+
 console.log(dataWords);
