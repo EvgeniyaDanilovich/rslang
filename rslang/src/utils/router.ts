@@ -1,5 +1,5 @@
 import Navigo from 'navigo';
-import { listenBookPage, renderBookPage } from '../components/book-page/book';
+import { allBookPage } from '../components/book-page/book';
 import { mainPageHtml } from '../components/main-page/main-page';
 import { renderAudiocallPage } from '../components/audiocall-page/audiocall-page';
 import { renderPageContent } from './common';
@@ -11,8 +11,9 @@ router
         renderPageContent(mainPageHtml);
     })
     .on('/book', () => {
-        renderBookPage();
-        listenBookPage();
+        // renderBookPage();
+        // listenBookPage();
+        allBookPage();
     })
     .on('/audiocall', () => {
         renderAudiocallPage();

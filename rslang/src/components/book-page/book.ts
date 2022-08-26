@@ -1,49 +1,52 @@
 import { getChunkWords } from '../../api/words';
+import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/common';
 import { path, svgImage } from '../../utils/constants';
 
 import './book.scss';
 
-// function allBookPage() {
-function setLocalStorage(key: string, value: string) {
-    localStorage.setItem(key, value);
-}
+export async function allBookPage() {
+    function setLocalStorage(key: string, value: string) {
+        localStorage.setItem(key, value);
+    }
 
-function getLocalStorage(key: string): string | null {
-    return localStorage.getItem(key);
-}
+    function getLocalStorage(key: string): string | null {
+        return localStorage.getItem(key);
+    }
 
-let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
-let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
+    const isAuthorized = getLocalStorage(LocalStorageKeys.ID);
 
-const dataWords = await getChunkWords(group, page);
+    let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
+    let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
 
-function addStatusButtons() {
-    const t = true;
-    if (t) {
-        return ` <div class="status">
+    const dataWords = await getChunkWords(group, page);
+
+    function addStatusButtons() {
+        // const t = true;
+        if (isAuthorized) {
+            return ` <div class="status">
         <div class="status-btn hard">Hard</div>
         <div class="status-btn like">Like</div>
     </div>`;
+        }
     }
-}
 
-const renderWord = (
-    id: string,
-    word: string,
-    transcription: string,
-    wordTranslate: string,
-    image: string,
-    audio: string,
-    audioMeaning: string,
-    audioExample: string,
-    textMeaning: string,
-    textMeaningTranslate: string,
-    textExample: string,
-    textExampleTranslate: string
-) =>
-    `<div class="card" id="${id}">
+    const renderWord = (
+        id: string,
+        word: string,
+        transcription: string,
+        wordTranslate: string,
+        image: string,
+        audio: string,
+        audioMeaning: string,
+        audioExample: string,
+        textMeaning: string,
+        textMeaningTranslate: string,
+        textExample: string,
+        textExampleTranslate: string
+    ) =>
+        `<div class="card" id="${id}">
 <div class="card__img"><img src="${path}/${image}" alt=""></div>
 <div class="card__info">
     <div class="card-header">
@@ -71,37 +74,37 @@ ${addStatusButtons()}
 </div>
 </div>`;
 
-const renderWords = (currentWords: Word[]) =>
-    `${currentWords
-        .map(
-            (word: Word) =>
-                `${renderWord(
-                    word.id,
-                    word.word,
-                    word.transcription,
-                    word.wordTranslate,
-                    word.image,
-                    word.audio,
-                    word.audioMeaning,
-                    word.audioExample,
-                    word.textMeaning,
-                    word.textMeaningTranslate,
-                    word.textExample,
-                    word.textExampleTranslate
-                )}`
-        )
-        .join()}`;
+    const renderWords = (currentWords: Word[]) =>
+        `${currentWords
+            .map(
+                (word: Word) =>
+                    `${renderWord(
+                        word.id,
+                        word.word,
+                        word.transcription,
+                        word.wordTranslate,
+                        word.image,
+                        word.audio,
+                        word.audioMeaning,
+                        word.audioExample,
+                        word.textMeaning,
+                        word.textMeaningTranslate,
+                        word.textExample,
+                        word.textExampleTranslate
+                    )}`
+            )
+            .join()}`;
 
-const renderPage = (): string => {
-    const arr = [];
-    for (let i = 0; i < 30; i++) {
-        arr.push(`<div class="page" data-page="${i}">${i + 1}</div>`);
-    }
-    return arr.join(' ');
-};
+    const renderPage = (): string => {
+        const arr = [];
+        for (let i = 0; i < 30; i++) {
+            arr.push(`<div class="page" data-page="${i}">${i + 1}</div>`);
+        }
+        return arr.join(' ');
+    };
 
-export const renderBookPage = (): void => {
-    const content = `
+    const renderBookPage = (): void => {
+        const content = `
     <div class="game-nav">
     <div class="game"><a href="#">Audio call</a></div>
     <div class="game"><a href="#">Sprint</a></div>
@@ -121,16 +124,17 @@ export const renderBookPage = (): void => {
 <div class="word-wrapper">
     ${renderWords(dataWords)}
 </div>`;
+        renderPageContent(content);
+    };
 
-    renderPageContent(content);
-};
+    renderBookPage();
 
-async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {
-    const dataWords: Word[] = await getChunkWords(group, page);
-    wordWrapper.innerHTML = renderWords(dataWords);
-}
+    async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {
+        const dataWords: Word[] = await getChunkWords(group, page);
+        wordWrapper.innerHTML = renderWords(dataWords);
+    }
 
-export function listenBookPage(): void {
+    // function listenBookPage(): void {
     const wordWrapper = document.querySelector('.word-wrapper') as HTMLElement;
     const sectionItems = document.querySelectorAll('.section') as NodeListOf<Element>;
     const pageItems = document.querySelectorAll('.page') as NodeListOf<Element>;
@@ -207,11 +211,10 @@ export function listenBookPage(): void {
         }
     });
 
-    const t = true;
-
-    if (t) {
+    if (isAuthorized) {
         const subNavigate = document.querySelector('.game-nav') as HTMLElement;
         const difficultWordsLink = `<div class="difficult"><a href="/difficult-words" data-navigo>Difficult words</a></div>`;
         subNavigate.innerHTML += difficultWordsLink;
     }
+    // }
 }
