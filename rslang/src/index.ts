@@ -16,3 +16,12 @@ export { token, refreshToken };
 // loginUser({ email: 'bob@mail.com', password: '12345678' }).then((el) => console.log(el));
 
 router.resolve();
+<<<<<<< HEAD
+=======
+
+// рендер поп-апа
+
+// рендер поп-апа
+
+import { addEventListenerPopUp } from '../src/components/login-page/login-page';
+addEventListenerPopUp();
