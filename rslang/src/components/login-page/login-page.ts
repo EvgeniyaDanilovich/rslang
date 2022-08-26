@@ -57,7 +57,6 @@ function addToLocalStorageKeys(data: Auth) {
 function signInResult(event: MouseEvent) {
     if ((event.target as HTMLElement).closest('.sign-in-btn')) {
         const idInLocalStorage = localStorage.getItem('id');
-        // console.log(idInLocalStorage);
         if (idInLocalStorage !== null) {
             const popUpWrapper = document.querySelector('.pop-up-wrapper');
             if (popUpWrapper !== null)
@@ -92,7 +91,6 @@ function LogOut(event: MouseEvent) {
 }
 
 function warning() {
-    (document.querySelector('.sign-in-btn') as HTMLElement).style.border = '1px solid red';
     const warning = `<div class="warning">Please fill in all the required fields</div>`;
     const warningHTML = document.querySelector('.warning') as HTMLElement;
     if (warningHTML !== null) warningHTML.remove();
@@ -101,7 +99,6 @@ function warning() {
 
 async function signIn(event: MouseEvent) {
     if ((event.target as HTMLElement).closest('.sign-in-btn')) {
-        // console.log('dc');
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
         const inputPassword = document.querySelector('.password-input') as HTMLInputElement;
@@ -125,7 +122,6 @@ async function signIn(event: MouseEvent) {
                 warning();
             } else {
                 const user = await createUser(dataUser);
-                // console.log(user);
                 const logIn = await loginUser(dataUser);
                 addToLocalStorageKeys(logIn);
             }
