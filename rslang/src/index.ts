@@ -1,4 +1,3 @@
-import { dataWords } from './api/words';
 import './style.scss';
 import { router } from './utils/router';
 import { loginUser } from './api/sign-in'; //после проверки удалить
@@ -22,5 +21,3 @@ router.resolve();
 
 import { addEventListenerPopUp } from '../src/components/login-page/login-page';
 addEventListenerPopUp();
-
-console.log(dataWords);
