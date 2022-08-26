@@ -1,6 +1,7 @@
-import { getChunkWords } from '../../api/words';
+import { createUserWord } from '../../api/users-words';
+import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
-import { Word } from '../../models/types';
+import { UserWord, Word } from '../../models/types';
 import { renderPageContent } from '../../utils/common';
 import { path, svgImage } from '../../utils/constants';
 
@@ -23,7 +24,6 @@ export async function allBookPage() {
     const dataWords = await getChunkWords(group, page);
 
     function addStatusButtons() {
-        // const t = true;
         if (isAuthorized) {
             return ` <div class="status">
         <div class="status-btn hard">Hard</div>
@@ -95,7 +95,7 @@ ${addStatusButtons()}
             )
             .join()}`;
 
-    const renderPage = (): string => {
+    const renderPagination = (): string => {
         const arr = [];
         for (let i = 0; i < 30; i++) {
             arr.push(`<div class="page" data-page="${i}">${i + 1}</div>`);
@@ -106,8 +106,8 @@ ${addStatusButtons()}
     const renderBookPage = (): void => {
         const content = `
     <div class="game-nav">
-    <div class="game"><a href="#">Audio call</a></div>
-    <div class="game"><a href="#">Sprint</a></div>
+    <div class="game audio-call"><a href="#/audiocall" data-navigo>Audio call</a></div>
+    <div class="game sprint"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
     <div >Level:</div>
@@ -119,7 +119,7 @@ ${addStatusButtons()}
     <div class="section" id="level-6" data-level="5">6</div>
 </div>
 <div class="pagination">
-  ${renderPage()}
+  ${renderPagination()}
 </div>
 <div class="word-wrapper">
     ${renderWords(dataWords)}
@@ -134,7 +134,6 @@ ${addStatusButtons()}
         wordWrapper.innerHTML = renderWords(dataWords);
     }
 
-    // function listenBookPage(): void {
     const wordWrapper = document.querySelector('.word-wrapper') as HTMLElement;
     const sectionItems = document.querySelectorAll('.section') as NodeListOf<Element>;
     const pageItems = document.querySelectorAll('.page') as NodeListOf<Element>;
@@ -142,7 +141,7 @@ ${addStatusButtons()}
     sectionItems[group].classList.add('active');
     pageItems[page].classList.add('active');
 
-    wordWrapper.addEventListener('click', (event: Event) => {
+    wordWrapper.addEventListener('click', async (event: Event) => {
         const currentItem = event.target as HTMLElement;
         const card = currentItem.closest('.card') as HTMLElement;
         const currentId: string = card.id;
@@ -164,9 +163,10 @@ ${addStatusButtons()}
             }, time3);
         }
 
-        const t = true;
-        if (t) {
+        if (isAuthorized) {
             const currentCard = currentItem.closest('.card') as HTMLElement;
+            const cardId = Number(currentCard.getAttribute('id'));
+            console.log(cardId);
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
@@ -174,6 +174,14 @@ ${addStatusButtons()}
             if (currentItem.closest('.hard')) {
                 currentCard.classList.remove('selected-like');
                 currentCard.classList.add('selected-hard');
+
+                const wordInfo: Word = await getWordWithAssetsById(cardId.toString());
+                const word: UserWord = {
+                    difficulty: 'hard',
+                    optional: wordInfo,
+                };
+                console.log(cardId.toString());
+                // createUserWord(isAuthorized, cardId.toString(), word);
             }
         }
     });
@@ -213,8 +221,18 @@ ${addStatusButtons()}
 
     if (isAuthorized) {
         const subNavigate = document.querySelector('.game-nav') as HTMLElement;
-        const difficultWordsLink = `<div class="difficult"><a href="/difficult-words" data-navigo>Difficult words</a></div>`;
+        const difficultWordsLink = `<div class="difficult"><a href="#/difficult-words" data-navigo>Difficult words</a></div>`;
         subNavigate.innerHTML += difficultWordsLink;
     }
-    // }
+
+    // const hardBtn = document.querySelector('.hard') as HTMLElement;
+    // const likeBtn = document.querySelector('.like') as HTMLElement;
+
+    // hardBtn.addEventListener('click', () => {
+    //     console.log('audioCallBtn');
+    // });
+
+    // sprintBtn.addEventListener('click', () => {
+    //     console.log('sprintBtn');
+    // });
 }

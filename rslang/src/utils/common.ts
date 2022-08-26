@@ -9,3 +9,7 @@ export function renderPageContent(pageHTML: string) {
 export function addToLocalStorage(key: string, data: string) {
     localStorage.setItem(`${key}`, `${data}`);
 }
+
+export function getLocalStorage(key: string): string | null {
+    return localStorage.getItem(key);
+}
