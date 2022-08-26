@@ -11,7 +11,7 @@ function renderLoginPopUp(): void {
             <h2>Log In</h2>
             <div class="inputs-container">
                 <input type="text" class="email-input" placeholder="E-mail">
-                <input type="text" class="password-input" placeholder="Password">
+                <input type="text" minlength="8" class="password-input" placeholder="Password">
             </div>
             <div class="log-button">
                 <button class="sign-in-btn">Sign In</button>
@@ -57,7 +57,7 @@ function addToLocalStorageKeys(data: Auth) {
 function signInResult(event: MouseEvent) {
     if ((event.target as HTMLElement).closest('.sign-in-btn')) {
         const idInLocalStorage = localStorage.getItem('id');
-        console.log(idInLocalStorage);
+        // console.log(idInLocalStorage);
         if (idInLocalStorage !== null) {
             const popUpWrapper = document.querySelector('.pop-up-wrapper');
             if (popUpWrapper !== null)
@@ -91,9 +91,17 @@ function LogOut(event: MouseEvent) {
     }
 }
 
+function warning() {
+    (document.querySelector('.sign-in-btn') as HTMLElement).style.border = '1px solid red';
+    const warning = `<div class="warning">Please fill in all the required fields</div>`;
+    const warningHTML = document.querySelector('.warning') as HTMLElement;
+    if (warningHTML !== null) warningHTML.remove();
+    (document.querySelector('.sign-in-btn') as HTMLElement).insertAdjacentHTML('beforebegin', warning);
+}
+
 async function signIn(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('sign-in-btn')) {
-        console.log('dc');
+    if ((event.target as HTMLElement).closest('.sign-in-btn')) {
+        // console.log('dc');
         const inputName = document.querySelector('.name-input') as HTMLInputElement;
         const inputEmail = document.querySelector('.email-input') as HTMLInputElement;
         const inputPassword = document.querySelector('.password-input') as HTMLInputElement;
@@ -105,26 +113,46 @@ async function signIn(event: MouseEvent) {
         }
         dataUser.email = inputEmail.value;
         dataUser.password = inputPassword.value;
+        const patternLogin = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (document.querySelector('.name-input')) {
-            const user = await createUser(dataUser);
-            console.log(user);
-            const logIn = await loginUser(dataUser);
-            addToLocalStorageKeys(logIn);
+            if (
+                inputEmail.value === '' ||
+                inputPassword.value === '' ||
+                inputName.value === '' ||
+                inputPassword.value.length < 8 ||
+                patternLogin.test(inputEmail.value) === false
+            ) {
+                warning();
+            } else {
+                const user = await createUser(dataUser);
+                // console.log(user);
+                const logIn = await loginUser(dataUser);
+                addToLocalStorageKeys(logIn);
+            }
         } else {
-            const logIn = await loginUser(dataUser);
-            addToLocalStorageKeys(logIn);
+            if (
+                inputEmail.value === '' ||
+                inputPassword.value === '' ||
+                inputPassword.value.length < 8 ||
+                patternLogin.test(inputEmail.value) === false
+            ) {
+                warning();
+            } else {
+                const logIn = await loginUser(dataUser);
+                console.log(logIn);
+                addToLocalStorageKeys(logIn);
+            }
         }
+        signInResult(event);
     }
 }
 
 export function addEventListenerPopUp() {
     document.addEventListener('click', renderLogOut);
-    document.addEventListener('click', signInResult);
     document.addEventListener('click', LogOut);
     const loginButton = document.querySelector('.authorization-btn') as HTMLButtonElement;
     loginButton.addEventListener('click', renderLoginPopUp);
     document.addEventListener('click', closePopUp);
     document.addEventListener('click', renderRegisterPopUp);
-    // document.addEventListener('click', signInResult);
     document.addEventListener('click', signIn);
 }

@@ -27,3 +27,16 @@
     position: fixed;
     cursor: pointer;
 }
+input:focus {
+    border: 1px solid #40959f;
+    box-shadow: 0 0 10px #40959f;
+    outline: none;
+}
+input:active {
+    border: 1px solid #40959f;
+}
+input:invalid {
+    border: 1px solid darkred;
+    color: darkred;
+    box-shadow: 0 0 10px darkred;
+}
