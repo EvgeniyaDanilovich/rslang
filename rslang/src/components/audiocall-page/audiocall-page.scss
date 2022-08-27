@@ -26,9 +26,12 @@
     border-radius: 20px;
 }
 
-.audio-card > div,
+.audio-card > div {
+    margin: 10px 0 10px 0;
+}
+
 .audio-card > button {
-    margin: 20px 0 20px 0;
+    margin: 15px 0 15px 0;
 }
 
 .block-answer {
@@ -113,7 +116,13 @@
     border-radius: 20px;
     border: solid rgb(100, 100, 100) 1px;
     padding-bottom: 30px;
+    svg {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
 }
+
 
 .header {
     font-size: 24px;
@@ -137,7 +146,39 @@
     padding-left: 30px;
 }
 
-.svg-image-small {
-    cursor: pointer;
-    display: inline;
+.current-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    display: block;
+    margin: 0 auto;
+    object-fit: cover;
+}
+
+.current-text {
+    font-size: 20px;
+}
+
+.card-description {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.small {
+    gap: 10px;
+    .word-audio {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+    }
+}
+
+.description-block {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
 }

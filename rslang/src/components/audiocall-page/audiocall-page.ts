@@ -1,6 +1,6 @@
 import { getRandomNum, renderPageContent } from '../../utils/common';
 import { getAllAggregatedWords } from '../../api/users-aggregated-words';
-import { path, contentDifficult, svgImageBig, svgImageSmall } from '../../utils/constants';
+import { path, contentDifficult, svgImage } from '../../utils/constants';
 import { Word } from '../../models/types';
 import './audiocall-page.scss';
 
@@ -44,7 +44,12 @@ async function playCard(): Promise<void> {
     const contentGame = `
     <div class="game-content">
         <div class="audio-card">
-            <div class="word-audio" data-word="${currentWord['wordTranslate']}">${svgImageBig}</div>
+            <div class="description-block">
+                <div class="current-image-block"></div>
+                <div class="card-description">
+                    <div class="word-audio" data-word="${currentWord['wordTranslate']}">${svgImage}</div>
+                </div>
+                </div>
             <div class="block-words">
                 <div class="word-answer">${arrWords[0].wordTranslate}</div>
                 <div class="word-answer">${arrWords[1].wordTranslate}</div>
@@ -75,16 +80,33 @@ function comparsionWords(EO: Event): void {
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
+    showDescription();
+}
+
+//-------------------- show word descriptoion --------------------//
+
+function showDescription() {
+    const image = document.createElement('img');
+    image.setAttribute('src', `${path}/${currentWordActive.image}`);
+    image.setAttribute('class', 'current-image');
+    const text = document.createElement('p');
+    text.innerText = `${currentWordActive.word}`;
+    text.setAttribute('class', 'current-text');
+    const blockImage = document.querySelector('.current-image-block');
+    const block = document.querySelector('.card-description');
+    block?.appendChild(text);
+    blockImage?.append(image);
+    block?.classList.add('small');
 }
 
 //-------------------- create and display result window --------------------//
 
 function showResult(): void {
     const resTrue = arrTrueWord.reduce((res, el) => {
-        return (res += `<p class="result-true">${svgImageSmall} ${el.word} - ${el.wordTranslate}</p>`);
+        return (res += `<p class="result-true">${svgImage} ${el.word} - ${el.wordTranslate}</p>`);
     }, '');
     const resFalse = arrFalseWord.reduce((res, el) => {
-        return (res += `<p class="result-false">${svgImageSmall} ${el.word} - ${el.wordTranslate}</p>`);
+        return (res += `<p class="result-false">${svgImage} ${el.word} - ${el.wordTranslate}</p>`);
     }, '');
     const contentResult = `
     <div class="game-content">
@@ -101,7 +123,7 @@ function showResult(): void {
     </div>
     `;
     renderPageContent(contentResult);
-    const arrSvgImage = document.querySelectorAll('.svg-image-small');
+    const arrSvgImage = document.querySelectorAll('.svg-image');
     const sumArr = arrFalseWord.concat(arrTrueWord);
 
     for (let i = 0; i <= sumArr.length; i++) {
