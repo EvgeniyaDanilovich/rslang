@@ -2,6 +2,7 @@ import { dataWords, getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/common';
 import { path } from '../../utils/constants';
+import { renderAudiocallPageWithParams } from '../audiocall-page/audiocall-page';
 
 import './book.scss';
 
@@ -91,7 +92,7 @@ const renderWords = (currentWords: Word[]) =>
 export const renderBookPage = (): void => {
     const content = `
     <div class="game-nav">
-    <div class="game"><a href="#">Audio call</a></div>
+    <div class="game-audiocall"><a href="/audiocall-with-params" data-navigo>Audio call</a></div>
     <div class="game"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
@@ -118,6 +119,7 @@ export const renderBookPage = (): void => {
 </div>`;
 
     renderPageContent(content);
+    document.querySelector('.audiocall')?.addEventListener('click', renderAudiocallPageWithParams);
 };
 
 async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {

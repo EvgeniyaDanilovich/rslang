@@ -3,6 +3,7 @@ import { getAllAggregatedWords } from '../../api/users-aggregated-words';
 import { path, contentDifficult, svgImage } from '../../utils/constants';
 import { Word } from '../../models/types';
 import './audiocall-page.scss';
+import { getChunkWords } from '../../api/words';
 
 let levelDifficult: number;
 let currentWordActive: Word;
@@ -16,6 +17,14 @@ const arrFalseWord: Word[] = [];
 export function renderAudiocallPage() {
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
+}
+
+//---------- render page with parameters page and group in textbook ----------//
+
+export function renderAudiocallPageWithParams() {
+    const group: number | null = Number(localStorage.getItem('group'));
+    const page: number | null = Number(localStorage.getItem('page'));
+    playCardFromTextbook(0, 0);
 }
 
 //---------- make a choice of difficulty level and run the first card ----------//
@@ -66,6 +75,60 @@ async function playCard(): Promise<void> {
     document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
     document.querySelector('.button-next')?.addEventListener('click', playCard);
     document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
+}
+
+//-------------------- create card --------------------//
+
+async function playCardFromTextbook(group: number, page: number): Promise<void> {
+    if (countCard > 0 && (document.querySelector('.button-next') as HTMLElement).innerText === "I don't know!") {
+        arrFalseWord.push(currentWordActive);
+    }
+    const wordsPartOne = await getChunkWords(group, page);
+    const wordsPartTwo = await getChunkWords(group, page - 1);
+    const wordsPartThree = await getChunkWords(group, page - 2);
+    const words = wordsPartOne.concat(wordsPartTwo).concat(wordsPartThree.slice(0, 10));
+    const length = words.length / 5;
+    let n = 0;
+    let m = 5;
+    renderCard();
+
+    function renderCard() {
+        countCard++;
+        if (countCard > length) {
+            showResult();
+            return;
+        }
+        const arrWords = words.slice(n, m);
+        const currentWord: Word = arrWords[getRandomNum(0, 4)];
+        currentWordActive = currentWord;
+        const contentGame = `
+            <div class="game-content">
+                <div class="audio-card">
+                    <div class="description-block">
+                        <div class="current-image-block"></div>
+                        <div class="card-description">
+                            <div class="word-audio" data-word="${currentWord['wordTranslate']}">${svgImage}</div>
+                        </div>
+                        </div>
+                    <div class="block-words">
+                        <div class="word-answer">${arrWords[0].wordTranslate}</div>
+                        <div class="word-answer">${arrWords[1].wordTranslate}</div>
+                        <div class="word-answer">${arrWords[2].wordTranslate}</div>
+                        <div class="word-answer">${arrWords[3].wordTranslate}</div>
+                        <div class="word-answer">${arrWords[4].wordTranslate}</div>
+                    </div>
+                    <button class="button-next">I don't know!</button>
+                </div>
+            </div>
+            `;
+        renderPageContent(contentGame);
+        playAudio();
+        document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
+        document.querySelector('.button-next')?.addEventListener('click', renderCard);
+        document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
+        n = n + 5;
+        m = m + 5;
+    }
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -126,7 +189,7 @@ function showResult(): void {
     const arrSvgImage = document.querySelectorAll('.svg-image');
     const sumArr = arrFalseWord.concat(arrTrueWord);
 
-    for (let i = 0; i <= sumArr.length; i++) {
+    for (let i = 0; i < sumArr.length; i++) {
         arrSvgImage[i].addEventListener('click', () => playAudio(sumArr[i].audio));
     }
 }
