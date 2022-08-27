@@ -2,77 +2,20 @@ import { createUserWord } from '../../api/users-words';
 import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { UserWord, Word } from '../../models/types';
-import { renderPageContent } from '../../utils/common';
-import { path, svgImage } from '../../utils/constants';
+import { addToLocalStorage, getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
+import { renderWord } from '../words-component/words-component';
 
 import './book.scss';
 
 export async function allBookPage() {
-    function setLocalStorage(key: string, value: string) {
-        localStorage.setItem(key, value);
-    }
-
-    function getLocalStorage(key: string): string | null {
-        return localStorage.getItem(key);
-    }
-
     const isAuthorized = getLocalStorage(LocalStorageKeys.ID);
 
     let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
+    if (page === 0) addToLocalStorage('page', '0');
     let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
+    if (group === 0) addToLocalStorage('group', '0');
 
     const dataWords = await getChunkWords(group, page);
-
-    function addStatusButtons() {
-        if (isAuthorized) {
-            return ` <div class="status">
-        <div class="status-btn hard">Hard</div>
-        <div class="status-btn like">Like</div>
-    </div>`;
-        }
-    }
-
-    const renderWord = (
-        id: string,
-        word: string,
-        transcription: string,
-        wordTranslate: string,
-        image: string,
-        audio: string,
-        audioMeaning: string,
-        audioExample: string,
-        textMeaning: string,
-        textMeaningTranslate: string,
-        textExample: string,
-        textExampleTranslate: string
-    ) =>
-        `<div class="card" id="${id}">
-<div class="card__img"><img src="${path}/${image}" alt=""></div>
-<div class="card__info">
-    <div class="card-header">
-        <div class="word">${word}</div>
-        <div class="transcription">${transcription}</div>
-        <div class="sound">
-        <audio id="audio-${id}">    
-            <source src="${path}/${audio}" type="audio/mpeg">
-        </audio>
-        <audio id="audio2-${id}">    
-            <source src="${path}/${audioMeaning}" type="audio/mpeg">
-        </audio>
-        <audio id="audio3-${id}">    
-            <source src="${path}/${audioExample}" type="audio/mpeg">
-        </audio>
-        ${svgImage}
-        </div>
-        <div class="translation">${wordTranslate}</div>
-    </div>
-    <div class="explain">${textMeaning}</div>
-    <div class="explain-translation">${textMeaningTranslate}</div>
-    <div class="example">${textExample}</div>
-    <div class="example-translation">${textExampleTranslate}</div>
-${addStatusButtons()}
-</div>
-</div>`;
 
     const renderWords = (currentWords: Word[]) =>
         `${currentWords
@@ -141,32 +84,12 @@ ${addStatusButtons()}
     sectionItems[group].classList.add('active');
     pageItems[page].classList.add('active');
 
-    wordWrapper.addEventListener('click', async (event: Event) => {
+    async function initCardStatus(event: Event) {
         const currentItem = event.target as HTMLElement;
-        const card = currentItem.closest('.card') as HTMLElement;
-        const currentId: string = card.id;
-        const audio = document.querySelector(`#audio-${currentId}`) as HTMLAudioElement;
-        const audio2 = document.querySelector(`#audio2-${currentId}`) as HTMLAudioElement;
-        const audio3 = document.querySelector(`#audio3-${currentId}`) as HTMLAudioElement;
-
-        const time1: number = audio.duration * 1000;
-        const time2: number = audio2.duration * 1000;
-        const time3: number = time1 + time2;
-
-        if (currentItem.closest('.sound')) {
-            audio.play();
-            setTimeout(() => {
-                audio2.play();
-            }, time1);
-            setTimeout(() => {
-                audio3.play();
-            }, time3);
-        }
-
         if (isAuthorized) {
             const currentCard = currentItem.closest('.card') as HTMLElement;
-            const cardId = Number(currentCard.getAttribute('id'));
-            console.log(cardId);
+            const cardId: string = currentCard.getAttribute('id');
+
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
@@ -175,16 +98,19 @@ ${addStatusButtons()}
                 currentCard.classList.remove('selected-like');
                 currentCard.classList.add('selected-hard');
 
-                const wordInfo: Word = await getWordWithAssetsById(cardId.toString());
+                const wordInfo: Word = await getWordWithAssetsById(cardId);
                 const word: UserWord = {
                     difficulty: 'hard',
                     optional: wordInfo,
                 };
-                console.log(cardId.toString());
-                // createUserWord(isAuthorized, cardId.toString(), word);
+
+                createUserWord(isAuthorized, cardId, word);
             }
         }
-    });
+    }
+
+    wordWrapper.addEventListener('click', playAudio);
+    wordWrapper.addEventListener('click', initCardStatus);
 
     const sections = document.querySelector('.sections') as HTMLElement;
     sections.addEventListener('click', (event: Event): void => {
@@ -198,7 +124,7 @@ ${addStatusButtons()}
 
             group = Number(currentItem.dataset.level);
             updateWordsOnPage(wordWrapper, group, page);
-            setLocalStorage('group', `${group}`);
+            addToLocalStorage('group', `${group}`);
         }
     });
 
@@ -215,7 +141,7 @@ ${addStatusButtons()}
 
             page = Number(currentItem.dataset.page);
             updateWordsOnPage(wordWrapper, group, page);
-            setLocalStorage('page', `${page}`);
+            addToLocalStorage('page', `${page}`);
         }
     });
 
@@ -224,15 +150,4 @@ ${addStatusButtons()}
         const difficultWordsLink = `<div class="difficult"><a href="#/difficult-words" data-navigo>Difficult words</a></div>`;
         subNavigate.innerHTML += difficultWordsLink;
     }
-
-    // const hardBtn = document.querySelector('.hard') as HTMLElement;
-    // const likeBtn = document.querySelector('.like') as HTMLElement;
-
-    // hardBtn.addEventListener('click', () => {
-    //     console.log('audioCallBtn');
-    // });
-
-    // sprintBtn.addEventListener('click', () => {
-    //     console.log('sprintBtn');
-    // });
 }

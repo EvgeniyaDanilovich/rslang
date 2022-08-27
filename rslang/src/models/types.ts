@@ -20,6 +20,12 @@ export interface UserWord {
     optional: object;
 }
 
+export interface UserWords {
+    id: string;
+    difficulty: string;
+    optional: Word;
+}
+
 export interface Statistic {
     learnedWords: number;
     optional: object;

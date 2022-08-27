@@ -4,4 +4,5 @@ export enum LocalStorageKeys {
     TOKEN = 'token',
     PAGE = 'page',
     GROUP = 'group',
+    REFRESHTOKEN = 'refreshToken',
 }
