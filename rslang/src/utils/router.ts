@@ -20,4 +20,7 @@ router
     })
     .on('/statistics', () => {
         renderStatisticsPage();
+    })
+    .on('/audiocall-with-params', () => {
+        renderAudiocallPageWithParams();
     });
