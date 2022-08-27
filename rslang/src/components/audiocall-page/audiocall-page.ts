@@ -28,6 +28,9 @@ function selectLevel(EO: Event): void {
 //-------------------- create card --------------------//
 
 async function playCard(): Promise<void> {
+    if (countCard > 0 && (document.querySelector('.button-next') as HTMLElement).innerText === "I don't know!") {
+        arrFalseWord.push(currentWordActive);
+    }
     countCard++;
     if (countCard > 10) {
         showResult();
@@ -49,7 +52,7 @@ async function playCard(): Promise<void> {
                 <div class="word-answer">${arrWords[3].wordTranslate}</div>
                 <div class="word-answer">${arrWords[4].wordTranslate}</div>
             </div>
-            <button class="button-next">NEXT</button>
+            <button class="button-next">I don't know!</button>
         </div>
     </div>
     `;
@@ -70,6 +73,7 @@ function comparsionWords(EO: Event): void {
         (EO.target as HTMLElement).style.cssText = 'background-color: green; color: white';
         arrTrueWord.push(currentWordActive);
     }
+    (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
 }
 
