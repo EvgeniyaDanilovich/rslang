@@ -91,7 +91,7 @@ function LogOut(event: MouseEvent) {
 }
 
 function warning() {
-    const warning = `<div class="warning">Please fill in all the required fields</div>`;
+    const warning = `<div class="warning">Please fill in all the required fields or enter the correct data</div>`;
     const warningHTML = document.querySelector('.warning') as HTMLElement;
     if (warningHTML !== null) warningHTML.remove();
     (document.querySelector('.sign-in-btn') as HTMLElement).insertAdjacentHTML('beforebegin', warning);
@@ -121,9 +121,13 @@ async function signIn(event: MouseEvent) {
             ) {
                 warning();
             } else {
-                const user = await createUser(dataUser);
+                await createUser(dataUser);
                 const logIn = await loginUser(dataUser);
-                addToLocalStorageKeys(logIn);
+                if (logIn <= 400) {
+                    warning();
+                } else {
+                    addToLocalStorageKeys(logIn);
+                }
             }
         } else {
             if (
@@ -135,8 +139,11 @@ async function signIn(event: MouseEvent) {
                 warning();
             } else {
                 const logIn = await loginUser(dataUser);
-                console.log(logIn);
-                addToLocalStorageKeys(logIn);
+                if (logIn == 404 || logIn == 403) {
+                    warning();
+                } else {
+                    addToLocalStorageKeys(logIn);
+                }
             }
         }
         signInResult(event);
