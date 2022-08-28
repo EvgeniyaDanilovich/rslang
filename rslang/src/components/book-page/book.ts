@@ -50,7 +50,7 @@ export async function allBookPage() {
     const renderBookPage = (): void => {
         const content = `
     <div class="game-nav">
-    <div class="game-audiocall"><a href="/audiocall-with-params" data-navigo>Audio call</a></div>
+    <div class="game-audiocall"><a href="#/audiocall-with-params" data-navigo>Audio call</a></div>
     <div class="game"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
