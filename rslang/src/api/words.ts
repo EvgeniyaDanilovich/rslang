@@ -29,5 +29,3 @@ export async function getWordWithAssetsById(wordId: string) {
         return content;
     }
 }
-
-export const dataWords = await getChunkWords(1, 1);

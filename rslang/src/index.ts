@@ -1,6 +1,9 @@
 import './style.scss';
 import { router } from './utils/router';
 import { loginUser } from './api/sign-in'; //после проверки удалить
+import { addEventListenerPopUp } from '../src/components/login-page/login-page';
+import { getLocalStorage } from './utils/common';
+import { LocalStorageKeys } from './enums/local-storage-keys';
 
 require('./img/rs_school_js.svg');
 
