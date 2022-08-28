@@ -1,7 +1,8 @@
 import Navigo from 'navigo';
 import { allBookPage } from '../components/book-page/book';
 import { mainPageHtml } from '../components/main-page/main-page';
-import { renderAudiocallPage } from '../components/audiocall-page/audiocall-page';
+import { renderAudiocallPage, renderAudiocallPageWithParams } from '../components/audiocall-page/audiocall-page';
+import { renderStatisticsPage } from '../components/statistics-page/statistics-page';
 import { renderPageContent } from './common';
 import { use } from '../components/difficult-word-page/difficult-word-page';
 
@@ -20,4 +21,10 @@ router
     .on('/difficult-words', () => {
         renderPageContent('Nothing');
         use();
+    })
+    .on('/statistics', () => {
+        renderStatisticsPage();
+    })
+    .on('/audiocall-with-params', () => {
+        renderAudiocallPageWithParams();
     });

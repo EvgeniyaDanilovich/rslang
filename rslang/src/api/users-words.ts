@@ -10,8 +10,12 @@ export async function getAllUserWords(userId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function createUserWord(userId: string, wordId: string, word: UserWord) {
@@ -24,8 +28,12 @@ export async function createUserWord(userId: string, wordId: string, word: UserW
         },
         body: JSON.stringify(word),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function getUserWord(userId: string, wordId: string) {
@@ -36,8 +44,12 @@ export async function getUserWord(userId: string, wordId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function updateUserWord(userId: string, wordId: string, param: object) {
@@ -49,8 +61,12 @@ export async function updateUserWord(userId: string, wordId: string, param: obje
         },
         body: JSON.stringify(param),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function deleteUserWord(userId: string, wordId: string) {
@@ -61,6 +77,10 @@ export async function deleteUserWord(userId: string, wordId: string) {
             Authorization: `Bearer ${token}`,
         },
     });
-    const content = rawResponse;
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }

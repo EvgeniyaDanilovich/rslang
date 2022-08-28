@@ -9,8 +9,12 @@ export async function getStatistic(userId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function upsertStatistic(userId: string, param: object) {
@@ -23,6 +27,10 @@ export async function upsertStatistic(userId: string, param: object) {
         },
         body: JSON.stringify(param),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }

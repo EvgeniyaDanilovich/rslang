@@ -1,5 +1,5 @@
 import { path } from '../utils/constants';
-import { User } from '../models/types';
+import { User, Auth } from '../models/types';
 
 export async function loginUser(user: User) {
     const rawResponse = await fetch(`${path}/signin`, {
@@ -10,6 +10,10 @@ export async function loginUser(user: User) {
         },
         body: JSON.stringify(user),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }

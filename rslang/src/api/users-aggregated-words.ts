@@ -12,8 +12,12 @@ export async function getAllAggregatedWords(userId: string, group: number, page:
             },
         }
     );
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function getAggregatedWordById(userId: string, wordId: string) {
@@ -24,6 +28,10 @@ export async function getAggregatedWordById(userId: string, wordId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
