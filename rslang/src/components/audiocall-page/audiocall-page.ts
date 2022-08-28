@@ -15,6 +15,7 @@ const arrFalseWord: Word[] = [];
 //---------- сreate and show a window for choosing the level of difficulty ----------//
 
 export function renderAudiocallPage() {
+    countCard = 0;
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
 }
@@ -22,6 +23,10 @@ export function renderAudiocallPage() {
 //---------- render page with parameters page and group in textbook ----------//
 
 export function renderAudiocallPageWithParams() {
+    countCard = 0;
+    arrWords.length = 0;
+    arrTrueWord.length = 0;
+    arrFalseWord.length = 0;
     const group: number | null = Number(localStorage.getItem('group'));
     const page: number | null = Number(localStorage.getItem('page'));
     playCardFromTextbook(0, 0);
