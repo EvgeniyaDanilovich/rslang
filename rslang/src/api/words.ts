@@ -7,8 +7,12 @@ export async function getChunkWords(group: number, page: number) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function getWordWithAssetsById(wordId: string) {
@@ -18,8 +22,12 @@ export async function getWordWithAssetsById(wordId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export const dataWords = await getChunkWords(1, 1);
