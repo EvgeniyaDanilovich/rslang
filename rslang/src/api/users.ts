@@ -11,8 +11,12 @@ export async function createUser(user: User) {
         },
         body: JSON.stringify(user),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function getUser(userId: string) {
@@ -23,8 +27,12 @@ export async function getUser(userId: string) {
             Accept: 'application/json',
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function updateUser(userId: string, user: User) {
@@ -37,8 +45,12 @@ export async function updateUser(userId: string, user: User) {
         },
         body: JSON.stringify(user),
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function deleteUser(userId: string) {
@@ -49,8 +61,12 @@ export async function deleteUser(userId: string) {
             Authorization: `Bearer ${token}`,
         },
     });
-    const content = rawResponse;
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
 
 export async function getNewUserToken(userId: string) {
@@ -60,6 +76,10 @@ export async function getNewUserToken(userId: string) {
             Authorization: `Bearer ${refreshToken}`,
         },
     });
-    const content = await rawResponse.json();
-    return content;
+    const content = rawResponse.status;
+    if (content == 200) {
+        return rawResponse.json();
+    } else {
+        return content;
+    }
 }
