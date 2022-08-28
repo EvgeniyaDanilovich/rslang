@@ -123,7 +123,7 @@ async function signIn(event: MouseEvent) {
             } else {
                 await createUser(dataUser);
                 const logIn = await loginUser(dataUser);
-                if (logIn <= 400) {
+                if (logIn >= 400) {
                     warning();
                 } else {
                     addToLocalStorageKeys(logIn);
@@ -139,7 +139,7 @@ async function signIn(event: MouseEvent) {
                 warning();
             } else {
                 const logIn = await loginUser(dataUser);
-                if (logIn == 404 || logIn == 403) {
+                if (logIn >= 400) {
                     warning();
                 } else {
                     addToLocalStorageKeys(logIn);
