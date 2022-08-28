@@ -7,7 +7,7 @@ require('./img/rs_school_js.svg');
 // для проверки:
 
 const token = localStorage.getItem('token');
-const refreshToken = localStorage.getItem('refresh-token');
+const refreshToken = localStorage.getItem('refreshToken');
 export { token, refreshToken };
 
 // loginUser({ email: 'bob@mail.com', password: '12345678' }).then((el) => console.log(el));
