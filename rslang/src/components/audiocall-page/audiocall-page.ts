@@ -1,139 +1,123 @@
 import { getRandomNum, renderPageContent } from '../../utils/common';
-import { getAllAggregatedWords } from '../../api/users-aggregated-words';
 import { path, contentDifficult, svgImage } from '../../utils/constants';
-import { Word } from '../../models/types';
+import { Word, audiocallWord } from '../../models/types';
 import './audiocall-page.scss';
 import { getChunkWords } from '../../api/words';
+import { WordsDifficultyLevel } from '../../enums/levels';
 
 let levelDifficult: number;
-let currentWordActive: Word;
+let trueWord: Word;
 let countCard = 0;
-let arrWords: Word[] = [];
+const arrWords: audiocallWord[] = [];
 const arrTrueWord: Word[] = [];
 const arrFalseWord: Word[] = [];
 
 //---------- сreate and show a window for choosing the level of difficulty ----------//
 
-export function renderAudiocallPage() {
+export function renderAudiocallPageFromMenu(): void {
     countCard = 0;
+    arrWords.length = 0;
+    arrTrueWord.length = 0;
+    arrFalseWord.length = 0;
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
 }
 
 //---------- render page with parameters page and group in textbook ----------//
 
-export function renderAudiocallPageWithParams() {
+export async function renderAudiocallPageFromTextbook(): Promise<void> {
     countCard = 0;
     arrWords.length = 0;
     arrTrueWord.length = 0;
     arrFalseWord.length = 0;
-    const group: number | null = Number(localStorage.getItem('group'));
-    const page: number | null = Number(localStorage.getItem('page'));
-    playCardFromTextbook(0, 0);
+    const group = Number(localStorage.getItem('group'));
+    const page = Number(localStorage.getItem('page'));
+    await generateArrCards(group, page);
+    playCard();
 }
 
 //---------- make a choice of difficulty level and run the first card ----------//
 
-function selectLevel(EO: Event): void {
+async function selectLevel(EO: Event): Promise<void> {
     levelDifficult = Number((EO.target as HTMLElement).dataset.id);
+    await generateArrCards();
     playCard();
 }
 
-//-------------------- create card --------------------//
+//-------------------- generate array cards --------------------//
+
+async function generateArrCards(group?: number, page?: number): Promise<void> {
+    const firsWordPosition = 0;
+    const lastWordPosition = 19;
+    const wordsCashTrue: Word[] = [];
+    let words: Word[];
+    if (group !== undefined && page !== undefined) {
+        words = await getChunkWords(group, page);
+    } else {
+        words = await getChunkWords(levelDifficult, getRandomNum(firsWordPosition, lastWordPosition));
+    }
+    while (wordsCashTrue.length < 10) {
+        trueWord = words[getRandomNum(firsWordPosition, lastWordPosition)];
+        if (!wordsCashTrue.includes(trueWord)) {
+            wordsCashTrue.push(trueWord);
+            let wordsCashVariants: Word[] = [];
+
+            while (wordsCashVariants.length < 4) {
+                const variant = words[getRandomNum(firsWordPosition, lastWordPosition)];
+                if (!wordsCashVariants.includes(variant) && variant !== trueWord) {
+                    wordsCashVariants.push(variant);
+                }
+            }
+            wordsCashVariants.push(trueWord);
+            wordsCashVariants = wordsCashVariants.sort(() => Math.random() - 0.5);
+
+            const objWord: audiocallWord = {
+                word: trueWord,
+                variants: wordsCashVariants,
+            };
+            arrWords.push(objWord);
+        }
+    }
+}
+
+// --------------------- Launch card in game -------------------- //
 
 async function playCard(): Promise<void> {
     if (countCard > 0 && (document.querySelector('.button-next') as HTMLElement).innerText === "I don't know!") {
-        arrFalseWord.push(currentWordActive);
+        arrFalseWord.push(arrWords[countCard - 1].word);
     }
     countCard++;
     if (countCard > 10) {
         showResult();
         return;
     }
-    const words = getAllAggregatedWords('62fec0ef3a51c600162caa6c', levelDifficult, getRandomNum(0, 119), 5);
-    const arrResponseWords = await words;
-    arrWords = arrResponseWords[0].paginatedResults;
-    const currentWord: Word = arrWords[getRandomNum(0, 4)];
-    currentWordActive = currentWord;
+
     const contentGame = `
     <div class="game-content">
         <div class="audio-card">
             <div class="description-block">
                 <div class="current-image-block"></div>
                 <div class="card-description">
-                    <div class="word-audio" data-word="${currentWord['wordTranslate']}">${svgImage}</div>
+                    <div class="word-audio" data-word="${arrWords[countCard - 1].word.wordTranslate}">${svgImage}</div>
                 </div>
                 </div>
             <div class="block-words">
-                <div class="word-answer">${arrWords[0].wordTranslate}</div>
-                <div class="word-answer">${arrWords[1].wordTranslate}</div>
-                <div class="word-answer">${arrWords[2].wordTranslate}</div>
-                <div class="word-answer">${arrWords[3].wordTranslate}</div>
-                <div class="word-answer">${arrWords[4].wordTranslate}</div>
+                <div class="word-answer">${arrWords[countCard - 1].variants[0].wordTranslate}</div>
+                <div class="word-answer">${arrWords[countCard - 1].variants[1].wordTranslate}</div>
+                <div class="word-answer">${arrWords[countCard - 1].variants[2].wordTranslate}</div>
+                <div class="word-answer">${arrWords[countCard - 1].variants[3].wordTranslate}</div>
+                <div class="word-answer">${arrWords[countCard - 1].variants[4].wordTranslate}</div>
             </div>
             <button class="button-next">I don't know!</button>
         </div>
     </div>
     `;
     renderPageContent(contentGame);
+
     playAudio();
     document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
     document.querySelector('.button-next')?.addEventListener('click', playCard);
     document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
-}
-
-//-------------------- create card --------------------//
-
-async function playCardFromTextbook(group: number, page: number): Promise<void> {
-    if (countCard > 0 && (document.querySelector('.button-next') as HTMLElement).innerText === "I don't know!") {
-        arrFalseWord.push(currentWordActive);
-    }
-    const wordsPartOne = await getChunkWords(group, page);
-    const wordsPartTwo = await getChunkWords(group, page - 1);
-    const wordsPartThree = await getChunkWords(group, page - 2);
-    const words = wordsPartOne.concat(wordsPartTwo).concat(wordsPartThree.slice(0, 10));
-    const length = words.length / 5;
-    let n = 0;
-    let m = 5;
-    renderCard();
-
-    function renderCard() {
-        countCard++;
-        if (countCard > length) {
-            showResult();
-            return;
-        }
-        const arrWords = words.slice(n, m);
-        const currentWord: Word = arrWords[getRandomNum(0, 4)];
-        currentWordActive = currentWord;
-        const contentGame = `
-            <div class="game-content">
-                <div class="audio-card">
-                    <div class="description-block">
-                        <div class="current-image-block"></div>
-                        <div class="card-description">
-                            <div class="word-audio" data-word="${currentWord['wordTranslate']}">${svgImage}</div>
-                        </div>
-                        </div>
-                    <div class="block-words">
-                        <div class="word-answer">${arrWords[0].wordTranslate}</div>
-                        <div class="word-answer">${arrWords[1].wordTranslate}</div>
-                        <div class="word-answer">${arrWords[2].wordTranslate}</div>
-                        <div class="word-answer">${arrWords[3].wordTranslate}</div>
-                        <div class="word-answer">${arrWords[4].wordTranslate}</div>
-                    </div>
-                    <button class="button-next">I don't know!</button>
-                </div>
-            </div>
-            `;
-        renderPageContent(contentGame);
-        playAudio();
-        document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
-        document.querySelector('.button-next')?.addEventListener('click', renderCard);
-        document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
-        n = n + 5;
-        m = m + 5;
-    }
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -141,10 +125,10 @@ async function playCardFromTextbook(group: number, page: number): Promise<void> 
 function comparsionWords(EO: Event): void {
     if ((EO.target as HTMLElement).innerText !== (document.querySelector('.word-audio') as HTMLElement).dataset.word) {
         (EO.target as HTMLElement).style.cssText = 'background-color: red; color: white';
-        arrFalseWord.push(currentWordActive);
+        arrFalseWord.push(arrWords[countCard - 1].word);
     } else {
         (EO.target as HTMLElement).style.cssText = 'background-color: green; color: white';
-        arrTrueWord.push(currentWordActive);
+        arrTrueWord.push(arrWords[countCard - 1].word);
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
@@ -153,12 +137,12 @@ function comparsionWords(EO: Event): void {
 
 //-------------------- show word descriptoion --------------------//
 
-function showDescription() {
+function showDescription(): void {
     const image = document.createElement('img');
-    image.setAttribute('src', `${path}/${currentWordActive.image}`);
+    image.setAttribute('src', `${path}/${arrWords[countCard - 1].word.image}`);
     image.setAttribute('class', 'current-image');
     const text = document.createElement('p');
-    text.innerText = `${currentWordActive.word}`;
+    text.innerText = `${arrWords[countCard - 1].word.word}`;
     text.setAttribute('class', 'current-text');
     const blockImage = document.querySelector('.current-image-block');
     const block = document.querySelector('.card-description');
@@ -191,7 +175,7 @@ function showResult(): void {
     </div>
     `;
     renderPageContent(contentResult);
-    const arrSvgImage = document.querySelectorAll('.svg-image');
+    const arrSvgImage = document.querySelectorAll('#svg');
     const sumArr = arrFalseWord.concat(arrTrueWord);
 
     for (let i = 0; i < sumArr.length; i++) {
@@ -206,7 +190,7 @@ function playAudio(audioValue?: string): void {
     if (audioValue) {
         audioElement.src = `${path}/${audioValue}`;
     } else {
-        audioElement.src = `${path}/${currentWordActive.audio}`;
+        audioElement.src = `${path}/${arrWords[countCard - 1].word.audio}`;
     }
     audioElement.play();
 }

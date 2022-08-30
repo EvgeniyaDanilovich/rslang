@@ -33,7 +33,7 @@ function closePopUp(event: MouseEvent) {
         if (popUp !== null) popUp.remove();
         if (overlay !== null) overlay.remove();
         document.body.style.overflow = 'visible';
-        window.location.reload()
+        window.location.reload();
     }
 }
 
