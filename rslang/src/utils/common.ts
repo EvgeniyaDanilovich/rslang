@@ -1,6 +1,6 @@
 import { getNewUserToken } from '../api/users';
 
-export function getRandomNum(min: number, max: number) {
+export function getRandomNum(min: number, max: number): number {
     return Math.floor(min + Math.random() * (max + 1 - min));
 }
 

@@ -5,6 +5,7 @@ import { renderAudiocallPage, renderAudiocallPageWithParams } from '../component
 import { renderStatisticsPage } from '../components/statistics-page/statistics-page';
 import { renderPageContent } from './common';
 import { use } from '../components/difficult-word-page/difficult-word-page';
+import { initSprintPage } from '../components/sprint-page/sprint-page';
 
 export const router = new Navigo('/', { hash: true });
 
@@ -27,4 +28,7 @@ router
     })
     .on('/audiocall-with-params', () => {
         renderAudiocallPageWithParams();
+    })
+    .on('/sprint', () => {
+        initSprintPage();
     });
