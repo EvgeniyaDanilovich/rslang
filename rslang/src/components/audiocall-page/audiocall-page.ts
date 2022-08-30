@@ -23,6 +23,30 @@ export function renderAudiocallPageFromMenu(): void {
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
 }
 
+//---------- use keyboard for control game ----------//
+
+function keyboardControl(EO: KeyboardEvent): void {
+    const block = document.querySelector('.block-words');
+    if (EO.code === 'Space' || EO.code === 'Enter' || EO.code === 'ArrowRight') {
+        playCard();
+    }
+    if (EO.code === 'Digit1') {
+        (block.children[0] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit2') {
+        (block.children[1] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit3') {
+        (block.children[2] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit4') {
+        (block.children[3] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit5') {
+        (block.children[4] as HTMLElement).click();
+    }
+}
+
 //---------- render page with parameters page and group in textbook ----------//
 
 export async function renderAudiocallPageFromTextbook(): Promise<void> {
@@ -118,6 +142,7 @@ async function playCard(): Promise<void> {
     document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
     document.querySelector('.button-next')?.addEventListener('click', playCard);
     document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
+    document.addEventListener('keydown', keyboardControl);
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
