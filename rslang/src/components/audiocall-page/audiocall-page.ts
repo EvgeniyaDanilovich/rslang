@@ -25,6 +25,7 @@ export function renderAudiocallPageFromMenu(): void {
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
     document.addEventListener('keydown', keyboardControlLevel);
 }
+
 //---------- use keyboard for control game ----------//
 
 function keyboardControlLevel(EO: KeyboardEvent): void {
@@ -262,7 +263,7 @@ function showResult(): void {
     document.querySelector('.button-restart')?.addEventListener('click', () => {
         return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
     });
-    (document.querySelector('.top-panel') as HTMLElement).style.justifyContent = "flex-end";
+    (document.querySelector('.top-panel') as HTMLElement).style.justifyContent = 'flex-end';
 }
 
 //---------- play audio word ----------//
