@@ -21,11 +21,32 @@ export function renderAudiocallPageFromMenu(): void {
     arrFalseWord.length = 0;
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
+    document.addEventListener('keydown', keyboardControlLevel);
+}
+//---------- use keyboard for control game ----------//
+
+function keyboardControlLevel(EO: KeyboardEvent): void {
+    const containerLevel = document.querySelector('.container-level');
+    if (EO.code === 'Digit1') {
+        (containerLevel.children[1] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit2') {
+        (containerLevel.children[1] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit3') {
+        (containerLevel.children[2] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit4') {
+        (containerLevel.children[3] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit5') {
+        (containerLevel.children[4] as HTMLElement).click();
+    }
 }
 
 //---------- use keyboard for control game ----------//
 
-function keyboardControl(EO: KeyboardEvent): void {
+function keyboardControlCard(EO: KeyboardEvent): void {
     const block = document.querySelector('.block-words');
     if (EO.code === 'Space' || EO.code === 'Enter' || EO.code === 'ArrowRight') {
         playCard();
@@ -107,6 +128,8 @@ async function generateArrCards(group?: number, page?: number): Promise<void> {
 // --------------------- Launch card in game -------------------- //
 
 async function playCard(): Promise<void> {
+    document.removeEventListener('keydown', keyboardControlLevel);
+    document.addEventListener('keydown', keyboardControlCard);
     if (countCard > 0 && (document.querySelector('.button-next') as HTMLElement).innerText === "I don't know!") {
         arrFalseWord.push(arrWords[countCard - 1].word);
     }
@@ -142,7 +165,6 @@ async function playCard(): Promise<void> {
     document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
     document.querySelector('.button-next')?.addEventListener('click', playCard);
     document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
-    document.addEventListener('keydown', keyboardControl);
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -179,20 +201,21 @@ function showDescription(): void {
 //-------------------- create and display result window --------------------//
 
 function showResult(): void {
+    document.removeEventListener('keydown', keyboardControlCard);
     const resTrue = arrTrueWord.reduce((res, el) => {
-        return (res += `<p class="result-true">${svgImage} ${el.word} - ${el.wordTranslate}</p>`);
+        return (res += `<p class="result-true">${svgImage} ${el.word} - <span class="word-translate">${el.wordTranslate}</span></p>`);
     }, '');
     const resFalse = arrFalseWord.reduce((res, el) => {
-        return (res += `<p class="result-false">${svgImage} ${el.word} - ${el.wordTranslate}</p>`);
+        return (res += `<p class="result-false">${svgImage} ${el.word} - <span class="word-translate">${el.wordTranslate}</span></p>`);
     }, '');
     const contentResult = `
     <div class="game-content">
         <div class="audio-result">
-            <p class="header">Wrong answers:</p>
+            <p class="header">Mistakes: <span class="count-color-false">${arrFalseWord.length}</span></p>
             <div class="result-false-words">
                 ${resFalse}
             </div>
-            <p class="header">Сorrect answers:</p>
+            <p class="header">I know: <span class="count-color-true">${arrTrueWord.length}</span></p>
             <div class="result-true-words">
                 ${resTrue}
             </div>
