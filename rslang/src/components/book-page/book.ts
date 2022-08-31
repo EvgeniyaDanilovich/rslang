@@ -4,7 +4,7 @@ import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { UserWord, Word } from '../../models/types';
 import { addToLocalStorage, getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
-import { renderAudiocallPageWithParams } from '../audiocall-page/audiocall-page';
+import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
 
 import './book.scss';
 
@@ -50,7 +50,7 @@ export async function allBookPage() {
     const renderBookPage = (): void => {
         const content = `
     <div class="game-nav">
-    <div class="game-audiocall"><a href="#/audiocall-with-params" data-navigo>Audio call</a></div>
+    <div class="game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
     <div class="game"><a href="#">Sprint</a></div>
 </div>
 <div class="sections">
@@ -70,7 +70,7 @@ export async function allBookPage() {
 </div>`;
 
         renderPageContent(content);
-        document.querySelector('.audiocall')?.addEventListener('click', renderAudiocallPageWithParams);
+        document.querySelector('.audiocall')?.addEventListener('click', renderAudiocallPageFromTextbook);
     };
 
     renderBookPage();

@@ -1,7 +1,7 @@
 import './login-page.scss';
 import { loginUser } from '../../api/sign-in';
 import { Auth, User } from '../../models/types';
-import { addToLocalStorage } from '../../utils/common';
+import { addToLocalStorage, renderPageContent } from '../../utils/common';
 import { createUser } from '../../api/users';
 
 function renderLoginPopUp(): void {
@@ -33,6 +33,7 @@ function closePopUp(event: MouseEvent) {
         if (popUp !== null) popUp.remove();
         if (overlay !== null) overlay.remove();
         document.body.style.overflow = 'visible';
+        window.location.reload();
     }
 }
 
