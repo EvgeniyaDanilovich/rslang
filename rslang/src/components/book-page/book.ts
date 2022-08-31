@@ -37,7 +37,7 @@ export async function allBookPage() {
                         word.textExampleTranslate
                     )}`
             )
-            .join()}`;
+            .join('')}`;
 
     const renderPagination = (): string => {
         const arr = [];

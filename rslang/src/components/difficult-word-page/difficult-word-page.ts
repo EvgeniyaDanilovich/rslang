@@ -29,7 +29,7 @@ export async function use() {
                         word.optional.textExampleTranslate
                     )}`
             )
-            .join()}`;
+            .join('')}`;
 
     const difficultPage = `
     <div class="word-wrapper">
