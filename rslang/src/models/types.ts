@@ -49,4 +49,9 @@ export interface Auth {
     userId: string;
     name: string;
 }
+
+export interface audiocallWord {
+    word: Word;
+    variants: Word[];
+}
 // <<<<<<< HEAD
