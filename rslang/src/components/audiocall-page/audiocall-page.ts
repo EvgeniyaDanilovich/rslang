@@ -144,6 +144,10 @@ async function playCard(): Promise<void> {
     const contentGame = `
     <div class="game-content">
         <div class="top-panel">
+            <div class="button-empty"></div>
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+            </div>
             <div class="button-restart">${svgRestart}</div>
         </div>
         <div class="audio-card">
@@ -184,6 +188,7 @@ async function playCard(): Promise<void> {
     document.querySelector('.button-restart')?.addEventListener('click', () => {
         return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
     });
+    (document.querySelector('.progress-line') as HTMLElement).style.width = `${((countCard - 1) / 10) * 100}%`;
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -257,6 +262,7 @@ function showResult(): void {
     document.querySelector('.button-restart')?.addEventListener('click', () => {
         return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
     });
+    (document.querySelector('.top-panel') as HTMLElement).style.justifyContent = "flex-end";
 }
 
 //---------- play audio word ----------//
