@@ -1,6 +1,6 @@
 import { getChunkWords } from '../../api/words';
 import { Word } from '../../models/types';
-import { getRandomNum, renderPageContent } from '../../utils/common';
+import { getRandomNum, keyboardControlLevel, renderPageContent } from '../../utils/common';
 import { contentDifficult } from '../../utils/constants';
 import './sprint-page.scss';
 
@@ -9,11 +9,30 @@ let group = 0;
 export function initSprintPage(): void {
     renderPageContent(contentDifficult);
     document.querySelectorAll('.button-level').forEach((el) => el.addEventListener('click', selectLevel));
+    document.addEventListener('keydown', keyboardControlLevel);
+}
+
+let timeMinute = 60;
+
+function setTimer() {
+    const timerElement = document.querySelector('.timer') as HTMLElement;
+
+    const timer = setInterval(function () {
+        if (timeMinute <= 0) {
+            clearInterval(timer);
+            alert('Время закончилось');
+        } else {
+            const strTimer = `${Math.trunc(timeMinute)}`;
+            timerElement.innerHTML = strTimer;
+        }
+        --timeMinute;
+    }, 1000);
 }
 
 function selectLevel(EO: Event): void {
     group = Number((EO.target as HTMLElement).dataset.id);
     renderSprintPage();
+    setTimer();
 }
 
 const somePages: number[] = [];
@@ -83,7 +102,7 @@ const sprintCard = (): string => `
 function renderSprintPage(): void {
     const content = `
             <div class="sprint-wrapper">
-               <div class="timer"></div>
+               <div class="timer">60</div>
                <div class="card-wrapper">
                   ${sprintCard()}
                </div>
@@ -153,6 +172,18 @@ function listenEvents(): void {
     const rightBtn = document.querySelector('.answer__right') as HTMLElement;
     rightBtn.addEventListener('click', (): void => oneStepGame(true));
 
+    document.addEventListener('keydown', (event: KeyboardEvent): void => {
+        if (event.code === 'ArrowLeft') {
+            oneStepGame(true);
+        }
+    });
+
     const wrongBtn = document.querySelector('.answer__wrong') as HTMLElement;
     wrongBtn.addEventListener('click', (): void => oneStepGame(false));
+
+    document.addEventListener('keydown', (event: KeyboardEvent): void => {
+        if (event.code === 'ArrowRight') {
+            oneStepGame(false);
+        }
+    });
 }

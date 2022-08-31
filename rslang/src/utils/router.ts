@@ -41,4 +41,5 @@ router
     })
     .on('/sprint', () => {
         initSprintPage();
+        deleteFooter();
     });

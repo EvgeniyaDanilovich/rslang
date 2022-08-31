@@ -19,6 +19,19 @@
 	padding: 20px 20px;
 
 }
+.timer{
+	position: absolute;
+	top: 15%;
+	right: 15%;
+	width: 85px;
+	height: 85px;
+	line-height: 77px;
+	text-align: center;
+	font-size: 40px;
+	color: #fff;
+	border: 5px solid #fff;
+	border-radius: 50%;
+}
 
 .sprint-card {
 	text-align: center;	
@@ -67,12 +80,10 @@
 	}
 
 		&__right {
-			// background-color: rgba(21, 155, 130, 0.763);
 			background-color: rgb(21, 155, 130);
 		}
 
 		&__wrong {
-			// background-color: rgba(155, 21, 70, 0.763);
 			background-color: rgb(174, 17, 75);
 		}
 }
