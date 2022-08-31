@@ -3,12 +3,21 @@ import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { UserWords } from '../../models/types';
 import { getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
+import { GetAggregatedWords, getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 
 export async function use() {
     const userId = getLocalStorage(LocalStorageKeys.ID);
 
-    const difficultWords = await getAllUserWords(userId);
-    console.log(difficultWords);
+    const difficultWord = await getAllUserWords(userId);
+    console.log(difficultWord);
+
+    // const difficultWordQuery: GetAggregatedWords = {
+    //     userId: userId,
+    //     filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
+    // };
+    //
+    // const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+    // console.log(difficultWords);
 
     const renderWords = (currentWords: UserWords[]) =>
         `${currentWords
@@ -34,7 +43,7 @@ export async function use() {
     const difficultPage = `
     <div class="word-wrapper">
     <h2>Difficult words</h2>
-    ${renderWords(difficultWords)}
+    ${renderWords(difficultWord)}
 </div> `;
 
     renderPageContent(difficultPage);
