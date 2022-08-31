@@ -1,5 +1,5 @@
 import { getRandomNum, renderPageContent } from '../../utils/common';
-import { path, contentDifficult, svgImage } from '../../utils/constants';
+import { path, contentDifficult, svgImage, svgRestart } from '../../utils/constants';
 import { Word, audiocallWord } from '../../models/types';
 import './audiocall-page.scss';
 import { getChunkWords } from '../../api/words';
@@ -8,6 +8,7 @@ import { WordsDifficultyLevel } from '../../enums/levels';
 let levelDifficult: number;
 let trueWord: Word;
 let countCard = 0;
+let modeGame: boolean;
 const arrWords: audiocallWord[] = [];
 const arrTrueWord: Word[] = [];
 const arrFalseWord: Word[] = [];
@@ -15,6 +16,7 @@ const arrFalseWord: Word[] = [];
 //---------- сreate and show a window for choosing the level of difficulty ----------//
 
 export function renderAudiocallPageFromMenu(): void {
+    modeGame = true;
     countCard = 0;
     arrWords.length = 0;
     arrTrueWord.length = 0;
@@ -71,6 +73,7 @@ function keyboardControlCard(EO: KeyboardEvent): void {
 //---------- render page with parameters page and group in textbook ----------//
 
 export async function renderAudiocallPageFromTextbook(): Promise<void> {
+    modeGame = false;
     countCard = 0;
     arrWords.length = 0;
     arrTrueWord.length = 0;
@@ -138,9 +141,11 @@ async function playCard(): Promise<void> {
         showResult();
         return;
     }
-
     const contentGame = `
     <div class="game-content">
+        <div class="top-panel">
+            <div class="button-restart">${svgRestart}</div>
+        </div>
         <div class="audio-card">
             <div class="description-block">
                 <div class="current-image-block"></div>
@@ -167,6 +172,7 @@ async function playCard(): Promise<void> {
             </div>
             <button class="button-next">I don't know!</button>
         </div>
+        <div class="bottom-panel"></div>
     </div>
     `;
     renderPageContent(contentGame);
@@ -175,6 +181,9 @@ async function playCard(): Promise<void> {
     document.querySelectorAll('.word-answer').forEach((el) => el.addEventListener('click', comparsionWords));
     document.querySelector('.button-next')?.addEventListener('click', playCard);
     document.querySelector('.word-audio')?.addEventListener('click', () => playAudio());
+    document.querySelector('.button-restart')?.addEventListener('click', () => {
+        return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
+    });
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
@@ -222,6 +231,9 @@ function showResult(): void {
     }, '');
     const contentResult = `
     <div class="game-content">
+        <div class="top-panel">
+            <div class="button-restart">${svgRestart}</div>
+        </div>
         <div class="audio-result">
             <p class="header">Mistakes: <span class="count-color-false">${arrFalseWord.length}</span></p>
             <div class="result-false-words">
@@ -232,6 +244,7 @@ function showResult(): void {
                 ${resTrue}
             </div>
         </div>
+        <div class="bottom-panel"></div>
     </div>
     `;
     renderPageContent(contentResult);
@@ -241,6 +254,9 @@ function showResult(): void {
     for (let i = 0; i < sumArr.length; i++) {
         arrSvgImage[i].addEventListener('click', () => playAudio(sumArr[i].audio));
     }
+    document.querySelector('.button-restart')?.addEventListener('click', () => {
+        return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
+    });
 }
 
 //---------- play audio word ----------//
