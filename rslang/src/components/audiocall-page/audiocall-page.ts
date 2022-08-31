@@ -149,11 +149,21 @@ async function playCard(): Promise<void> {
                 </div>
                 </div>
             <div class="block-words">
-                <div class="word-answer">${arrWords[countCard - 1].variants[0].wordTranslate}</div>
-                <div class="word-answer">${arrWords[countCard - 1].variants[1].wordTranslate}</div>
-                <div class="word-answer">${arrWords[countCard - 1].variants[2].wordTranslate}</div>
-                <div class="word-answer">${arrWords[countCard - 1].variants[3].wordTranslate}</div>
-                <div class="word-answer">${arrWords[countCard - 1].variants[4].wordTranslate}</div>
+                <div class="word-answer" data-word="${arrWords[countCard - 1].variants[0].wordTranslate}">1. ${
+        arrWords[countCard - 1].variants[0].wordTranslate
+    }</div>
+                <div class="word-answer" data-word="${arrWords[countCard - 1].variants[1].wordTranslate}">2. ${
+        arrWords[countCard - 1].variants[1].wordTranslate
+    }</div>
+                <div class="word-answer" data-word="${arrWords[countCard - 1].variants[2].wordTranslate}">3. ${
+        arrWords[countCard - 1].variants[2].wordTranslate
+    }</div>
+                <div class="word-answer" data-word="${arrWords[countCard - 1].variants[3].wordTranslate}">4. ${
+        arrWords[countCard - 1].variants[3].wordTranslate
+    }</div>
+                <div class="word-answer" data-word="${arrWords[countCard - 1].variants[4].wordTranslate}">5. ${
+        arrWords[countCard - 1].variants[4].wordTranslate
+    }</div>
             </div>
             <button class="button-next">I don't know!</button>
         </div>
@@ -170,7 +180,9 @@ async function playCard(): Promise<void> {
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
 
 function comparsionWords(EO: Event): void {
-    if ((EO.target as HTMLElement).innerText !== (document.querySelector('.word-audio') as HTMLElement).dataset.word) {
+    if (
+        (EO.target as HTMLElement).dataset.word !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
+    ) {
         (EO.target as HTMLElement).style.cssText = 'background-color: red; color: white';
         arrFalseWord.push(arrWords[countCard - 1].word);
     } else {
