@@ -54,4 +54,11 @@ export interface audiocallWord {
     word: Word;
     variants: Word[];
 }
-// <<<<<<< HEAD
+
+export interface GetAggregatedWords {
+    userId: string;
+    group?: number;
+    page?: number;
+    wordsPerPage?: number;
+    filter?: Record<string, unknown>;
+}

@@ -1,9 +1,9 @@
 import { deleteUserWord, getAllUserWords } from '../../api/users-words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
-import { UserWords } from '../../models/types';
+import { GetAggregatedWords, UserWords } from '../../models/types';
 import { getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
-import { GetAggregatedWords, getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
+import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 
 export async function use() {
     const userId = getLocalStorage(LocalStorageKeys.ID);

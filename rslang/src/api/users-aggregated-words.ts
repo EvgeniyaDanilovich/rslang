@@ -1,13 +1,6 @@
 import { token } from '../index';
 import { path } from '../utils/constants';
-
-export interface GetAggregatedWords {
-    userId: string;
-    group?: number;
-    page?: number;
-    wordsPerPage?: number;
-    filter?: Record<string, unknown>;
-}
+import { GetAggregatedWords } from '../models/types';
 
 export function parseQuery(query: GetAggregatedWords): string {
     let parsedQuery = `${query.userId}/aggregatedWords`;
