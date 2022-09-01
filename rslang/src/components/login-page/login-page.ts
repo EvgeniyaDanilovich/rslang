@@ -18,7 +18,8 @@ function renderLoginPopUp(): void {
                 <button class="register-btn">Register</button>
             </div>
     `;
-    const main = document.querySelector('.footer-container');
+    // const main = document.querySelector('.footer-container');
+    const main = document.querySelector('.main-container');
     if (main !== null) main.insertAdjacentElement('afterend', popUp);
     document.body.style.overflow = 'hidden';
     const overlay = document.createElement('div');

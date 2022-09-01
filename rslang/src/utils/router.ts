@@ -43,3 +43,7 @@ router
         initSprintPage();
         deleteFooter();
     });
+// .on('/sprint-book', () => {
+//     initSprintPageFromBook();
+//     deleteFooter();
+// });

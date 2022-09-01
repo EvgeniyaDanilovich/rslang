@@ -1,4 +1,5 @@
 import { getNewUserToken } from '../api/users';
+import { path } from './constants';
 
 export function getRandomNum(min: number, max: number): number {
     return Math.floor(min + Math.random() * (max + 1 - min));
@@ -24,7 +25,7 @@ export function getLocalStorage(key: string): string | null {
     return localStorage.getItem(key);
 }
 
-export async function playAudio(event: Event) {
+export async function playAudioBook(event: Event) {
     const currentItem = event.target as HTMLElement;
     const card = currentItem.closest('.card') as HTMLElement;
     const currentId: string = card.id;

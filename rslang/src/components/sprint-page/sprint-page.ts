@@ -1,10 +1,26 @@
-import { getChunkWords } from '../../api/words';
+import { getChunkWords, getWordWithAssetsById } from '../../api/words';
+import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { Word } from '../../models/types';
-import { getRandomNum, keyboardControlLevel, renderPageContent } from '../../utils/common';
+import { getLocalStorage, getRandomNum, keyboardControlLevel, renderPageContent } from '../../utils/common';
 import { contentDifficult } from '../../utils/constants';
+import { renderGameResult } from '../result-game-component/result-game-component';
 import './sprint-page.scss';
 
 let group = 0;
+// const isFromBookGame = false;
+
+const trueResultGame: Word[] = [];
+const falseResultGame: Word[] = [];
+
+const somePages: number[] = [];
+// let allWordsForCurrentGame: Word[] = [];
+
+let isCorrectTranslate = true;
+let currentTranslate = isCorrectTranslate;
+
+setInterval((): void => {
+    isCorrectTranslate ? (isCorrectTranslate = false) : (isCorrectTranslate = true);
+}, 3000);
 
 export function initSprintPage(): void {
     renderPageContent(contentDifficult);
@@ -12,30 +28,36 @@ export function initSprintPage(): void {
     document.addEventListener('keydown', keyboardControlLevel);
 }
 
-let timeMinute = 60;
+function selectLevel(EO: Event): void {
+    group = Number((EO.target as HTMLElement).dataset.id);
+    console.log(Number((EO.target as HTMLElement).dataset.id));
+    renderSprintPage();
+    setTimer();
+    console.log(allWordsForCurrentGame);
+}
+
+// export function initSprintPageFromBook() {
+//     isFromBookGame = true;
+//     // getAllWords();
+//     renderSprintPage();
+//     setTimer();
+// }
 
 function setTimer() {
     const timerElement = document.querySelector('.timer') as HTMLElement;
+    let timeMinute = 20;
 
     const timer = setInterval(function () {
-        if (timeMinute <= 0) {
+        if (timeMinute < 0) {
             clearInterval(timer);
-            alert('Время закончилось');
+            renderGameResult(trueResultGame, falseResultGame);
         } else {
             const strTimer = `${Math.trunc(timeMinute)}`;
             timerElement.innerHTML = strTimer;
         }
-        --timeMinute;
+        timeMinute--;
     }, 1000);
 }
-
-function selectLevel(EO: Event): void {
-    group = Number((EO.target as HTMLElement).dataset.id);
-    renderSprintPage();
-    setTimer();
-}
-
-const somePages: number[] = [];
 
 function getRandomPages(): void {
     for (let i = 0; i < 5; i++) {
@@ -50,48 +72,64 @@ function getRandomPages(): void {
 
 getRandomPages();
 
+// async function s() {
 const dataWords1: Word[] = await getChunkWords(group, somePages[0]);
 const dataWords2: Word[] = await getChunkWords(group, somePages[1]);
 const dataWords3: Word[] = await getChunkWords(group, somePages[2]);
 const dataWords4: Word[] = await getChunkWords(group, somePages[3]);
 const dataWords5: Word[] = await getChunkWords(group, somePages[4]);
+// }
 
-const allWords: Word[] = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
+const allWordsForCurrentGame: Word[] = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
 
-let score = 0;
-let scoreAdd = 10;
+// console.log(allWordsForCurrentGame);
 
-let isCorrectTranslate = true;
-let currentTranslate = isCorrectTranslate;
-setInterval((): void => {
-    isCorrectTranslate ? (isCorrectTranslate = false) : (isCorrectTranslate = true);
-}, 3000);
+// async function getAllWords() {
+//     const dataWords1: Word[] = await getChunkWords(group, somePages[0]);
+//     const dataWords2: Word[] = await getChunkWords(group, somePages[1]);
+//     const dataWords3: Word[] = await getChunkWords(group, somePages[2]);
+//     const dataWords4: Word[] = await getChunkWords(group, somePages[3]);
+//     const dataWords5: Word[] = await getChunkWords(group, somePages[4]);
 
-const cardWords = (englishWord: string, russianWord: string): string => `
-    <div class="english-word">${englishWord}</div>
+//     allWordsForCurrentGame = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
+
+//     // if (!isFromBookGame) {
+//     //     allWordsForCurrentGame = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
+//     //     console.log('4');
+//     // } else {
+//     //     const group = +getLocalStorage(LocalStorageKeys.GROUP);
+//     //     const page = +getLocalStorage(LocalStorageKeys.PAGE);
+//     //     const response = await getChunkWords(group, page);
+//     //     allWordsForCurrentGame = response;
+//     //     console.log(response);
+//     // }
+// }
+
+const cardWords = (id: string, englishWord: string, russianWord: string): string => `
+    <div class="english-word" id="${id}">${englishWord}</div>
     <div class="russian-word">${russianWord}</div>
 `;
 
 function renderCardWords(word: Word, wordFalse: Word): string {
     currentTranslate = isCorrectTranslate;
     if (isCorrectTranslate) {
-        return cardWords(word.word, word.wordTranslate);
+        return cardWords(word.id, word.word, word.wordTranslate);
     } else {
-        return cardWords(word.word, wordFalse.wordTranslate);
+        return cardWords(word.id, word.word, wordFalse.wordTranslate);
     }
 }
 
 const sprintCard = (): string => `
         <div class="sprint-card">
-    <div class="score">${score}</div>
-    <div class="add-score">+ <span>${scoreAdd}</span> points</div>
+    <div class="score">0</div>
+    <div class="add-score">+ <span>10</span> points</div>
     <div class="stage">
         <div class="stage__point point-1" data-point="1"></div>
         <div class="stage__point point-2" data-point="2"></div>
         <div class="stage__point point-3" data-point="3"></div>
     </div>
     <div class="words-wrapper">
-       ${renderCardWords(allWords[getRandomNum(0, 99)], allWords[getRandomNum(0, 99)])}
+       ${renderCardWords(allWordsForCurrentGame[getRandomNum(0, 99)], allWordsForCurrentGame[getRandomNum(0, 99)])}
     </div>
     <div class="answer">
         <div class="answer__right btn ">Right</div>
@@ -112,9 +150,22 @@ function renderSprintPage(): void {
     listenEvents();
 }
 
+async function sortResult(resultStatus: boolean) {
+    const word = document.querySelector('.english-word') as HTMLElement;
+    const wordId = word.getAttribute('id');
+    const wordData: Word = await getWordWithAssetsById(wordId);
+    resultStatus ? trueResultGame.push(wordData) : falseResultGame.push(wordData);
+}
+
 function listenEvents(): void {
+    let score = 0;
+    let scoreAdd = 10;
+
     function changeWord(): void {
-        const w = renderCardWords(allWords[getRandomNum(0, 99)], allWords[getRandomNum(0, 99)]);
+        const w = renderCardWords(
+            allWordsForCurrentGame[getRandomNum(0, 99)],
+            allWordsForCurrentGame[getRandomNum(0, 99)]
+        );
         const wordsWrapper = document.querySelector('.words-wrapper') as HTMLElement;
         wordsWrapper.innerHTML = w;
     }
@@ -161,9 +212,11 @@ function listenEvents(): void {
         if (currentTranslate === result) {
             changeScore();
             updateStage();
+            sortResult(true);
         } else {
             resetStage();
             resetScoreAdd();
+            sortResult(false);
         }
 
         changeWord();
