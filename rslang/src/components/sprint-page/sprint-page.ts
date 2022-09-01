@@ -7,13 +7,13 @@ import { renderGameResult } from '../result-game-component/result-game-component
 import './sprint-page.scss';
 
 let group = 0;
-// const isFromBookGame = false;
+let isGameFromBook = false;
 
-const trueResultGame: Word[] = [];
-const falseResultGame: Word[] = [];
+let trueResultGame: Word[] = [];
+let falseResultGame: Word[] = [];
 
-const somePages: number[] = [];
-// let allWordsForCurrentGame: Word[] = [];
+let somePages: number[] = [];
+let allWordsForCurrentGame: Word[] = [];
 
 let isCorrectTranslate = true;
 let currentTranslate = isCorrectTranslate;
@@ -28,34 +28,49 @@ export function initSprintPage(): void {
     document.addEventListener('keydown', keyboardControlLevel);
 }
 
-function selectLevel(EO: Event): void {
+async function selectLevel(EO: Event): Promise<void> {
+    trueResultGame = [];
+    falseResultGame = [];
+    somePages = [];
+    allWordsForCurrentGame = [];
+    isGameFromBook = false;
+
     group = Number((EO.target as HTMLElement).dataset.id);
-    console.log(Number((EO.target as HTMLElement).dataset.id));
+    getRandomPages();
+    await getWords();
     renderSprintPage();
     setTimer();
-    console.log(allWordsForCurrentGame);
 }
 
-// export function initSprintPageFromBook() {
-//     isFromBookGame = true;
-//     // getAllWords();
-//     renderSprintPage();
-//     setTimer();
-// }
+export async function initSprintPageFromBook() {
+    trueResultGame = [];
+    falseResultGame = [];
+    somePages = [];
+    allWordsForCurrentGame = [];
+    isGameFromBook = true;
+
+    await getWordsFromBook();
+    renderSprintPage();
+    setTimer();
+}
 
 function setTimer() {
     const timerElement = document.querySelector('.timer') as HTMLElement;
-    let timeMinute = 20;
+    let timeMinute = 60;
 
     const timer = setInterval(function () {
-        if (timeMinute < 0) {
-            clearInterval(timer);
-            renderGameResult(trueResultGame, falseResultGame);
+        if (document.location.hash === '#/sprint-book' || document.location.hash === '#/sprint') {
+            if (timeMinute < 0) {
+                clearInterval(timer);
+                renderGameResult(trueResultGame, falseResultGame);
+            } else {
+                const strTimer = `${Math.trunc(timeMinute)}`;
+                timerElement.innerHTML = strTimer;
+            }
+            timeMinute--;
         } else {
-            const strTimer = `${Math.trunc(timeMinute)}`;
-            timerElement.innerHTML = strTimer;
+            clearInterval(timer);
         }
-        timeMinute--;
     }, 1000);
 }
 
@@ -70,40 +85,28 @@ function getRandomPages(): void {
     }
 }
 
-getRandomPages();
+async function getWords() {
+    for (const page of somePages) {
+        const dataWords: Word[] = await getChunkWords(group, page);
+        allWordsForCurrentGame.push(...dataWords);
+    }
+}
 
-// async function s() {
-const dataWords1: Word[] = await getChunkWords(group, somePages[0]);
-const dataWords2: Word[] = await getChunkWords(group, somePages[1]);
-const dataWords3: Word[] = await getChunkWords(group, somePages[2]);
-const dataWords4: Word[] = await getChunkWords(group, somePages[3]);
-const dataWords5: Word[] = await getChunkWords(group, somePages[4]);
-// }
+let page: number;
 
-const allWordsForCurrentGame: Word[] = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
+async function getWordsFromBook() {
+    allWordsForCurrentGame = [];
+    const group = +getLocalStorage(LocalStorageKeys.GROUP);
+    page = +getLocalStorage(LocalStorageKeys.PAGE);
+    const dataWords: Word[] = await getChunkWords(group, page);
+    allWordsForCurrentGame.push(...dataWords);
 
-// console.log(allWordsForCurrentGame);
-
-// async function getAllWords() {
-//     const dataWords1: Word[] = await getChunkWords(group, somePages[0]);
-//     const dataWords2: Word[] = await getChunkWords(group, somePages[1]);
-//     const dataWords3: Word[] = await getChunkWords(group, somePages[2]);
-//     const dataWords4: Word[] = await getChunkWords(group, somePages[3]);
-//     const dataWords5: Word[] = await getChunkWords(group, somePages[4]);
-
-//     allWordsForCurrentGame = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
-
-//     // if (!isFromBookGame) {
-//     //     allWordsForCurrentGame = dataWords1.concat(dataWords2, dataWords3, dataWords4, dataWords5);
-//     //     console.log('4');
-//     // } else {
-//     //     const group = +getLocalStorage(LocalStorageKeys.GROUP);
-//     //     const page = +getLocalStorage(LocalStorageKeys.PAGE);
-//     //     const response = await getChunkWords(group, page);
-//     //     allWordsForCurrentGame = response;
-//     //     console.log(response);
-//     // }
-// }
+    if (page > 0) {
+        page--;
+        const dataWords: Word[] = await getChunkWords(group, page);
+        allWordsForCurrentGame.push(...dataWords);
+    }
+}
 
 const cardWords = (id: string, englishWord: string, russianWord: string): string => `
     <div class="english-word" id="${id}">${englishWord}</div>
@@ -119,6 +122,84 @@ function renderCardWords(word: Word, wordFalse: Word): string {
     }
 }
 
+let currentIndex = -1;
+
+function getRandomTrueWord(): number {
+    const indexesWord20: number[] = [7, 6, 8, 2, 15, 19, 1, 3, 17, 13, 11, 4, 0, 18, 16, 9, 5, 10, 12, 14];
+    const indexesWord40 = [
+        7,
+        6,
+        8,
+        2,
+        15,
+        19,
+        1,
+        3,
+        17,
+        13,
+        11,
+        4,
+        0,
+        18,
+        16,
+        9,
+        5,
+        10,
+        12,
+        14,
+        22,
+        20,
+        28,
+        31,
+        26,
+        32,
+        34,
+        21,
+        39,
+        24,
+        36,
+        27,
+        35,
+        30,
+        38,
+        33,
+        25,
+        23,
+        37,
+        29,
+    ];
+
+    if (isGameFromBook) {
+        currentIndex++;
+        if (page > 0) {
+            if (currentIndex === 40) renderGameResult(trueResultGame, falseResultGame);
+            return indexesWord40[currentIndex];
+        } else {
+            if (currentIndex === 20) renderGameResult(trueResultGame, falseResultGame);
+            return indexesWord20[currentIndex];
+        }
+    } else {
+        const maxQuantityWords = 99;
+        return getRandomNum(0, maxQuantityWords);
+    }
+}
+
+function getRandomFalseWord() {
+    let maxQuantityWords: number;
+    if (isGameFromBook) {
+        if (page > 0) {
+            maxQuantityWords = 39;
+            return getRandomNum(0, maxQuantityWords);
+        } else {
+            maxQuantityWords = 19;
+            return getRandomNum(0, maxQuantityWords);
+        }
+    } else {
+        maxQuantityWords = 99;
+        return getRandomNum(0, maxQuantityWords);
+    }
+}
+
 const sprintCard = (): string => `
         <div class="sprint-card">
     <div class="score">0</div>
@@ -129,7 +210,7 @@ const sprintCard = (): string => `
         <div class="stage__point point-3" data-point="3"></div>
     </div>
     <div class="words-wrapper">
-       ${renderCardWords(allWordsForCurrentGame[getRandomNum(0, 99)], allWordsForCurrentGame[getRandomNum(0, 99)])}
+       ${renderCardWords(allWordsForCurrentGame[getRandomTrueWord()], allWordsForCurrentGame[getRandomFalseWord()])}
     </div>
     <div class="answer">
         <div class="answer__right btn ">Right</div>
@@ -163,8 +244,8 @@ function listenEvents(): void {
 
     function changeWord(): void {
         const w = renderCardWords(
-            allWordsForCurrentGame[getRandomNum(0, 99)],
-            allWordsForCurrentGame[getRandomNum(0, 99)]
+            allWordsForCurrentGame[getRandomTrueWord()],
+            allWordsForCurrentGame[getRandomFalseWord()]
         );
         const wordsWrapper = document.querySelector('.words-wrapper') as HTMLElement;
         wordsWrapper.innerHTML = w;

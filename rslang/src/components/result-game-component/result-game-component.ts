@@ -66,4 +66,9 @@ export function renderGameResult(arrTrueWords: Word[], arrFalseWords: Word[]) {
             audio.play();
         }
     });
+
+    const reset = document.querySelector('.button-restart') as HTMLElement;
+    reset.addEventListener('click', () => {
+        document.location.reload();
+    });
 }
