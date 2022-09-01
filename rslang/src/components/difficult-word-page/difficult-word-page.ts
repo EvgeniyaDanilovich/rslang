@@ -1,7 +1,7 @@
 import { deleteUserWord, getAllUserWords } from '../../api/users-words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { FilterWord, GetAggregatedWords, UserWords } from '../../models/types';
-import { getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
+import { getLocalStorage, getNewToken, playAudio, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 
@@ -14,6 +14,10 @@ export async function use() {
     };
 
     const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+
+    if (typeof difficultWords == 'number') {
+        getNewToken();
+    }
 
     const renderWords = (currentWords: FilterWord[]) =>
         `${currentWords

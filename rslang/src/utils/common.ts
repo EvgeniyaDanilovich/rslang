@@ -15,8 +15,12 @@ export async function getNewToken() {
     const id = localStorage.getItem('id');
     if (id) {
         const newTokens = await getNewUserToken(id);
-        addToLocalStorage('token', newTokens.token);
-        addToLocalStorage('refreshToken', newTokens.refreshToken);
+        if (typeof newTokens != 'number') {
+            addToLocalStorage('token', newTokens.token);
+            addToLocalStorage('refreshToken', newTokens.refreshToken);
+        } else {
+            alert('Please log in again');
+        }
     }
 }
 
