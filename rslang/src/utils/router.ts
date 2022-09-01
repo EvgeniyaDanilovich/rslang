@@ -14,6 +14,10 @@ import { initSprintPage, initSprintPageFromBook } from '../components/sprint-pag
 export const router = new Navigo('/', { hash: true });
 
 router
+    .on('', () => {
+        renderPageContent(mainPageHtml);
+        renderFooter();
+    })
     .on('/main', () => {
         renderPageContent(mainPageHtml);
         renderFooter();
