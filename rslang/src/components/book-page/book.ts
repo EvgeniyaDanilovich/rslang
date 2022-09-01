@@ -2,7 +2,7 @@ import { createUserWord } from '../../api/users-words';
 import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { UserWord, Word } from '../../models/types';
-import { addToLocalStorage, getLocalStorage, playAudio, renderPageContent } from '../../utils/common';
+import { addToLocalStorage, getLocalStorage, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
 
@@ -51,7 +51,7 @@ export async function allBookPage() {
         const content = `
     <div class="game-nav">
     <div class="game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
-    <div class="game"><a href="#">Sprint</a></div>
+    <div class="game"><a href="#/sprint-book" data-navigo>Sprint</a></div>
 </div>
 <div class="sections">
     <div >Level:</div>
@@ -112,7 +112,7 @@ export async function allBookPage() {
         }
     }
 
-    wordWrapper.addEventListener('click', playAudio);
+    wordWrapper.addEventListener('click', playAudioBook);
     wordWrapper.addEventListener('click', initCardStatus);
 
     const sections = document.querySelector('.sections') as HTMLElement;

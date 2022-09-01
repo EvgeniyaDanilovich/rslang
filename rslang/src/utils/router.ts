@@ -9,6 +9,7 @@ import { renderStatisticsPage } from '../components/statistics-page/statistics-p
 import { renderPageContent } from './common';
 import { use } from '../components/difficult-word-page/difficult-word-page';
 import { renderFooter, deleteFooter } from '../components/footer/footer';
+import { initSprintPage, initSprintPageFromBook } from '../components/sprint-page/sprint-page';
 
 export const router = new Navigo('/', { hash: true });
 
@@ -36,5 +37,13 @@ router
     })
     .on('/audiocall-from-textbook', () => {
         renderAudiocallPageFromTextbook();
+        deleteFooter();
+    })
+    .on('/sprint', () => {
+        initSprintPage();
+        deleteFooter();
+    })
+    .on('/sprint-book', () => {
+        initSprintPageFromBook();
         deleteFooter();
     });

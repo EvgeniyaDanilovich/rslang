@@ -1,6 +1,7 @@
 import { getNewUserToken } from '../api/users';
+import { path } from './constants';
 
-export function getRandomNum(min: number, max: number) {
+export function getRandomNum(min: number, max: number): number {
     return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
@@ -28,7 +29,7 @@ export function getLocalStorage(key: string): string | null {
     return localStorage.getItem(key);
 }
 
-export async function playAudio(event: Event) {
+export async function playAudioBook(event: Event) {
     const currentItem = event.target as HTMLElement;
     const card = currentItem.closest('.card') as HTMLElement;
     const currentId: string = card.id;
@@ -48,5 +49,27 @@ export async function playAudio(event: Event) {
         setTimeout(() => {
             audio3.play();
         }, time3);
+    }
+}
+
+export function keyboardControlLevel(EO: KeyboardEvent): void {
+    const containerLevel = document.querySelector('.container-level');
+    if (EO.code === 'Digit1' || EO.code === 'Numpad1') {
+        (containerLevel.children[0] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit2' || EO.code === 'Numpad2') {
+        (containerLevel.children[1] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit3' || EO.code === 'Numpad3') {
+        (containerLevel.children[2] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit4' || EO.code === 'Numpad4') {
+        (containerLevel.children[3] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit5' || EO.code === 'Numpad5') {
+        (containerLevel.children[4] as HTMLElement).click();
+    }
+    if (EO.code === 'Digit6' || EO.code === 'Numpad6') {
+        (containerLevel.children[5] as HTMLElement).click();
     }
 }

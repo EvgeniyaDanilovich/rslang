@@ -1,7 +1,7 @@
 import { deleteUserWord, getAllUserWords } from '../../api/users-words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { FilterWord, GetAggregatedWords, UserWords } from '../../models/types';
-import { getLocalStorage, getNewToken, playAudio, renderPageContent } from '../../utils/common';
+import { getLocalStorage, getNewToken, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 
@@ -61,6 +61,6 @@ export async function use() {
     }
 
     const wordWrapper = document.querySelector('.word-wrapper');
-    wordWrapper.addEventListener('click', playAudio);
+    wordWrapper.addEventListener('click', playAudioBook);
     wordWrapper.addEventListener('click', removeCard);
 }
