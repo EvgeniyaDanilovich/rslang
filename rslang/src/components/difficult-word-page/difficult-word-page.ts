@@ -1,40 +1,49 @@
 import { deleteUserWord, getAllUserWords } from '../../api/users-words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
-import { UserWords } from '../../models/types';
-import { getLocalStorage, playAudioBook, renderPageContent } from '../../utils/common';
+import { FilterWord, GetAggregatedWords, UserWords } from '../../models/types';
+import { getLocalStorage, getNewToken, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
+import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 
 export async function use() {
     const userId = getLocalStorage(LocalStorageKeys.ID);
 
-    const difficultWords = await getAllUserWords(userId);
-    console.log(difficultWords);
+    const difficultWordQuery: GetAggregatedWords = {
+        userId: userId,
+        filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
+    };
 
-    const renderWords = (currentWords: UserWords[]) =>
+    const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+
+    if (typeof difficultWords == 'number') {
+        getNewToken();
+    }
+
+    const renderWords = (currentWords: FilterWord[]) =>
         `${currentWords
             .map(
-                (word: UserWords) =>
+                (word: FilterWord) =>
                     `${renderWord(
-                        word.optional.id,
-                        word.optional.word,
-                        word.optional.transcription,
-                        word.optional.wordTranslate,
-                        word.optional.image,
-                        word.optional.audio,
-                        word.optional.audioMeaning,
-                        word.optional.audioExample,
-                        word.optional.textMeaning,
-                        word.optional.textMeaningTranslate,
-                        word.optional.textExample,
-                        word.optional.textExampleTranslate
+                        word._id,
+                        word.userWord.optional.word,
+                        word.userWord.optional.transcription,
+                        word.userWord.optional.wordTranslate,
+                        word.userWord.optional.image,
+                        word.userWord.optional.audio,
+                        word.userWord.optional.audioMeaning,
+                        word.userWord.optional.audioExample,
+                        word.userWord.optional.textMeaning,
+                        word.userWord.optional.textMeaningTranslate,
+                        word.userWord.optional.textExample,
+                        word.userWord.optional.textExampleTranslate
                     )}`
             )
-            .join()}`;
+            .join('')}`;
 
     const difficultPage = `
     <div class="word-wrapper">
     <h2>Difficult words</h2>
-    ${renderWords(difficultWords)}
+    ${renderWords(difficultWords[0].paginatedResults)}
 </div> `;
 
     renderPageContent(difficultPage);

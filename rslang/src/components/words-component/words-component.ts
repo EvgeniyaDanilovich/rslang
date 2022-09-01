@@ -11,7 +11,7 @@ function addStatusButtons() {
         if (!(document.location.hash === '#/difficult-words')) {
             return ` <div class="status">
                    <div class="status-btn hard">Hard</div>
-                   <div class="status-btn like">Like</div>
+                   <div class="status-btn like">Learned</div>
                </div>`;
         } else {
             return ` <div class="status">
