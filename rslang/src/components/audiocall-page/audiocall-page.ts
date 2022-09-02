@@ -1,9 +1,10 @@
-import { getRandomNum, renderPageContent } from '../../utils/common';
+import { getNewToken, getRandomNum, renderPageContent } from '../../utils/common';
 import { path, contentDifficult, svgImage, svgRestart } from '../../utils/constants';
 import { Word, audiocallWord } from '../../models/types';
 import './audiocall-page.scss';
 import { getChunkWords } from '../../api/words';
 import { WordsDifficultyLevel } from '../../enums/levels';
+import { getStatistic, upsertStatistic } from '../../api/user-statistic';
 
 let levelDifficult: number;
 let trueWord: Word;
@@ -139,7 +140,7 @@ async function playCard(): Promise<void> {
     }
     countCard++;
     if (countCard > 10) {
-        showResult();
+        await showResult();
         return;
     }
     const contentGame = `
@@ -193,16 +194,22 @@ async function playCard(): Promise<void> {
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
-
-function comparsionWords(EO: Event): void {
+let longestSeries = 0;
+let previousLongestSeries = 0;
+function comparsionWords(EO: Event) {
     if (
         (EO.target as HTMLElement).dataset.word !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
     ) {
         (EO.target as HTMLElement).style.cssText = 'background-color: red; color: white';
         arrFalseWord.push(arrWords[countCard - 1].word);
+        longestSeries = 0;
     } else {
         (EO.target as HTMLElement).style.cssText = 'background-color: green; color: white';
         arrTrueWord.push(arrWords[countCard - 1].word);
+        longestSeries = longestSeries + 1;
+        if (longestSeries > previousLongestSeries) previousLongestSeries = longestSeries;
+        console.log(longestSeries);
+        console.log(previousLongestSeries);
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
@@ -227,7 +234,7 @@ function showDescription(): void {
 
 //-------------------- create and display result window --------------------//
 
-function showResult(): void {
+async function showResult() {
     document.removeEventListener('keydown', keyboardControlCard);
     const resTrue = arrTrueWord.reduce((res, el) => {
         return (res += `<p class="result-true">${svgImage} ${el.word} - <span class="word-translate">${el.wordTranslate}</span></p>`);
@@ -264,6 +271,40 @@ function showResult(): void {
         return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
     });
     (document.querySelector('.top-panel') as HTMLElement).style.justifyContent = 'flex-end';
+
+    //---------add to statistic
+
+    const statistic = await getStatistic(`${localStorage.getItem('id')}`);
+    console.log(statistic);
+    if (statistic == 404) {
+        const optional = {
+            learnedWords: 0,
+            optional: {
+                longestSeriesAudioCall: `${previousLongestSeries}`,
+                AudioCallAllWords: `${arrTrueWord.length + arrFalseWord.length}`,
+                AudioCallCorrectAnswers: `${arrTrueWord.length}`,
+            },
+        };
+        await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+    } else if (statistic == 401) {
+        await getNewToken();
+    } else {
+        let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
+        if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
+        console.log(previousLongestSeries);
+        const AudioCallAllWords = statistic.optional.AudioCallAllWords;
+        console.log(AudioCallAllWords);
+        const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;
+        const optional = {
+            learnedWords: 0,
+            optional: {
+                longestSeriesAudioCall: `${longestSeriesAudioCall}`,
+                AudioCallAllWords: `${Number(AudioCallAllWords) + arrTrueWord.length + arrFalseWord.length}`,
+                AudioCallCorrectAnswers: `${Number(AudioCallCorrectAnswers) + arrTrueWord.length}`,
+            },
+        };
+        await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+    }
 }
 
 //---------- play audio word ----------//

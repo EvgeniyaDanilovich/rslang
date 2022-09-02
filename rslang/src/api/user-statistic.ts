@@ -1,6 +1,18 @@
 import { token } from '../index';
 import { path } from '../utils/constants';
 
+interface UserStatistic {
+    learnedWords: number;
+    optional?: {
+        longestSeriesAudioCall?: number;
+        longestSeriesSprint?: number;
+        AudioCallAllWords?: number;
+        SprintAllWords?: number;
+        AudioCallCorrectAnswers?: number;
+        SprintCorrectAnswers?: number;
+    };
+}
+
 export async function getStatistic(userId: string) {
     const rawResponse = await fetch(`${path}/users/${userId}/statistics`, {
         method: 'GET',
