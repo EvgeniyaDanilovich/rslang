@@ -208,8 +208,6 @@ function comparsionWords(EO: Event) {
         arrTrueWord.push(arrWords[countCard - 1].word);
         longestSeries = longestSeries + 1;
         if (longestSeries > previousLongestSeries) previousLongestSeries = longestSeries;
-        console.log(longestSeries);
-        console.log(previousLongestSeries);
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
@@ -275,7 +273,6 @@ async function showResult() {
     //---------add to statistic
 
     const statistic = await getStatistic(`${localStorage.getItem('id')}`);
-    console.log(statistic);
     if (statistic == 404) {
         const optional = {
             learnedWords: 0,
@@ -283,6 +280,9 @@ async function showResult() {
                 longestSeriesAudioCall: `${previousLongestSeries}`,
                 AudioCallAllWords: `${arrTrueWord.length + arrFalseWord.length}`,
                 AudioCallCorrectAnswers: `${arrTrueWord.length}`,
+                longestSeriesSprint: `${0}`,
+                SprintAllWords: `${0}`,
+                SprintCorrectAnswers: `${0}`,
             },
         };
         await upsertStatistic(`${localStorage.getItem('id')}`, optional);
@@ -291,9 +291,7 @@ async function showResult() {
     } else {
         let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
         if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
-        console.log(previousLongestSeries);
         const AudioCallAllWords = statistic.optional.AudioCallAllWords;
-        console.log(AudioCallAllWords);
         const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;
         const optional = {
             learnedWords: 0,
@@ -301,6 +299,9 @@ async function showResult() {
                 longestSeriesAudioCall: `${longestSeriesAudioCall}`,
                 AudioCallAllWords: `${Number(AudioCallAllWords) + arrTrueWord.length + arrFalseWord.length}`,
                 AudioCallCorrectAnswers: `${Number(AudioCallCorrectAnswers) + arrTrueWord.length}`,
+                longestSeriesSprint: `${statistic.optional.longestSeriesSprint}`,
+                SprintAllWords: `${statistic.optional.SprintAllWords}`,
+                SprintCorrectAnswers: `${statistic.optional.SprintCorrectAnswers}`,
             },
         };
         await upsertStatistic(`${localStorage.getItem('id')}`, optional);

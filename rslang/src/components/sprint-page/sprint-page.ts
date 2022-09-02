@@ -1,10 +1,17 @@
 import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { Word } from '../../models/types';
-import { getLocalStorage, getRandomNum, keyboardControlLevel, renderPageContent } from '../../utils/common';
+import {
+    getLocalStorage,
+    getNewToken,
+    getRandomNum,
+    keyboardControlLevel,
+    renderPageContent,
+} from '../../utils/common';
 import { contentDifficult } from '../../utils/constants';
 import { renderGameResult } from '../result-game-component/result-game-component';
 import './sprint-page.scss';
+import { getStatistic, upsertStatistic } from '../../api/user-statistic';
 
 let group = 0;
 let isGameFromBook = false;
@@ -17,6 +24,9 @@ let allWordsForCurrentGame: Word[] = [];
 
 let isCorrectTranslate = true;
 let currentTranslate = isCorrectTranslate;
+
+let longestSeries = 0;
+let previousLongestSeries = 0;
 
 setInterval((): void => {
     isCorrectTranslate ? (isCorrectTranslate = false) : (isCorrectTranslate = true);
@@ -39,7 +49,7 @@ async function selectLevel(EO: Event): Promise<void> {
     getRandomPages();
     await getWords();
     renderSprintPage();
-    setTimer();
+    await setTimer();
 }
 
 export async function initSprintPageFromBook() {
@@ -51,18 +61,56 @@ export async function initSprintPageFromBook() {
 
     await getWordsFromBook();
     renderSprintPage();
-    setTimer();
+    await setTimer();
 }
 
-function setTimer() {
+async function setTimer() {
     const timerElement = document.querySelector('.timer') as HTMLElement;
     let timeMinute = 60;
 
-    const timer = setInterval(function () {
+    const timer = setInterval(async function () {
         if (document.location.hash === '#/sprint-book' || document.location.hash === '#/sprint') {
             if (timeMinute < 0) {
                 clearInterval(timer);
                 renderGameResult(trueResultGame, falseResultGame);
+                //---------add to statistic
+
+                const statistic = await getStatistic(`${localStorage.getItem('id')}`);
+                if (statistic == 404) {
+                    const optional = {
+                        learnedWords: 0,
+                        optional: {
+                            longestSeriesSprint: `${previousLongestSeries}`,
+                            SprintAllWords: `${trueResultGame.length + falseResultGame.length}`,
+                            SprintCorrectAnswers: `${trueResultGame.length}`,
+                            longestSeriesAudioCall: `${0}`,
+                            AudioCallAllWords: `${0}`,
+                            AudioCallCorrectAnswers: `${0}`,
+                        },
+                    };
+                    await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+                } else if (statistic == 401) {
+                    await getNewToken();
+                } else {
+                    let longestSeriesSprint = statistic.optional.longestSeriesSprint;
+                    if (longestSeriesSprint < previousLongestSeries) longestSeriesSprint = previousLongestSeries;
+                    const SprintAllWords = statistic.optional.SprintAllWords;
+                    const SprintCorrectAnswers = statistic.optional.SprintCorrectAnswers;
+                    const optional = {
+                        learnedWords: 0,
+                        optional: {
+                            longestSeriesSprint: `${longestSeriesSprint}`,
+                            SprintAllWords: `${
+                                Number(SprintAllWords) + trueResultGame.length + falseResultGame.length
+                            }`,
+                            SprintCorrectAnswers: `${Number(SprintCorrectAnswers) + trueResultGame.length}`,
+                            longestSeriesAudioCall: `${statistic.optional.longestSeriesAudioCall}`,
+                            AudioCallAllWords: `${statistic.optional.AudioCallAllWords}`,
+                            AudioCallCorrectAnswers: `${statistic.optional.AudioCallCorrectAnswers}`,
+                        },
+                    };
+                    await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+                }
             } else {
                 const strTimer = `${Math.trunc(timeMinute)}`;
                 timerElement.innerHTML = strTimer;
@@ -235,7 +283,14 @@ async function sortResult(resultStatus: boolean) {
     const word = document.querySelector('.english-word') as HTMLElement;
     const wordId = word.getAttribute('id');
     const wordData: Word = await getWordWithAssetsById(wordId);
-    resultStatus ? trueResultGame.push(wordData) : falseResultGame.push(wordData);
+    if (resultStatus) {
+        trueResultGame.push(wordData);
+        longestSeries = longestSeries + 1;
+        if (longestSeries > previousLongestSeries) previousLongestSeries = longestSeries;
+    } else {
+        falseResultGame.push(wordData);
+        longestSeries = 0;
+    }
 }
 
 function listenEvents(): void {

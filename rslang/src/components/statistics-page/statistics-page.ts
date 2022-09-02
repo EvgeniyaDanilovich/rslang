@@ -47,22 +47,34 @@ export async function renderStatisticsPage() {
         const statistic = await getStatistic(`${localStorage.getItem('id')}`);
 
         if (statistic == 401) await getNewToken();
-
-        renderPageContent(
-            statisticsPage(
-                0,
-                `${Math.round(
-                    (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
-                )}`,
-                `${statistic.optional.longestSeriesAudioCall}`,
-                0,
-                5,
-                6,
-                0,
-                8,
-                9
-            )
-        );
+        if (statistic == 404) renderPageContent(statisticsPage(0, 0, 0, 0, 0, 0, 0, 0, 0));
+        if (typeof statistic != 'number') {
+            renderPageContent(
+                statisticsPage(
+                    0,
+                    `${Math.round(
+                        (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
+                    )}`,
+                    `${statistic.optional.longestSeriesAudioCall}`,
+                    0,
+                    `${Math.round(
+                        (statistic.optional.SprintCorrectAnswers / statistic.optional.SprintAllWords) * 100
+                    )}`,
+                    `${statistic.optional.longestSeriesSprint}`,
+                    0,
+                    0,
+                    `${
+                        Math.round(
+                            (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
+                        ) +
+                        Math.round(
+                            (statistic.optional.SprintCorrectAnswers / statistic.optional.SprintAllWords) * 100
+                        ) /
+                            2
+                    }`
+                )
+            );
+        }
     } else {
         renderPageContent(stopper);
     }
