@@ -49,29 +49,43 @@ export async function renderStatisticsPage() {
         if (statistic == 401) await getNewToken();
         if (statistic == 404) renderPageContent(statisticsPage(0, 0, 0, 0, 0, 0, 0, 0, 0));
         if (typeof statistic != 'number') {
+            let AudioCallCorrectAnswers: string | number = 0;
+            let SprintCorrectAnswers: string | number = 0;
+            let CorrectAnswers: string | number = 0;
+            if (statistic.optional.AudioCallCorrectAnswers != 0) {
+                AudioCallCorrectAnswers = `${Math.round(
+                    (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
+                )}`;
+            } else {
+                AudioCallCorrectAnswers = 0;
+            }
+            if (statistic.optional.SprintCorrectAnswers != 0) {
+                SprintCorrectAnswers = `${Math.round(
+                    (statistic.optional.SprintCorrectAnswers / statistic.optional.SprintAllWords) * 100
+                )}`;
+            } else {
+                SprintCorrectAnswers = 0;
+            }
+            if (AudioCallCorrectAnswers == 0 && SprintCorrectAnswers == 0) {
+                CorrectAnswers = 0;
+            } else if (AudioCallCorrectAnswers == 0 && SprintCorrectAnswers != 0) {
+                CorrectAnswers = SprintCorrectAnswers;
+            } else if (AudioCallCorrectAnswers != 0 && SprintCorrectAnswers == 0) {
+                CorrectAnswers = AudioCallCorrectAnswers;
+            } else if (AudioCallCorrectAnswers != 0 && SprintCorrectAnswers != 0) {
+                CorrectAnswers = (Number(AudioCallCorrectAnswers) + Number(SprintCorrectAnswers)) / 2;
+            }
             renderPageContent(
                 statisticsPage(
                     0,
-                    `${Math.round(
-                        (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
-                    )}`,
+                    AudioCallCorrectAnswers,
                     `${statistic.optional.longestSeriesAudioCall}`,
                     0,
-                    `${Math.round(
-                        (statistic.optional.SprintCorrectAnswers / statistic.optional.SprintAllWords) * 100
-                    )}`,
+                    SprintCorrectAnswers,
                     `${statistic.optional.longestSeriesSprint}`,
                     0,
                     0,
-                    `${
-                        Math.round(
-                            (statistic.optional.AudioCallCorrectAnswers / statistic.optional.AudioCallAllWords) * 100
-                        ) +
-                        Math.round(
-                            (statistic.optional.SprintCorrectAnswers / statistic.optional.SprintAllWords) * 100
-                        ) /
-                            2
-                    }`
+                    CorrectAnswers
                 )
             );
         }
