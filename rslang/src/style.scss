@@ -35,10 +35,11 @@ p {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #d7efe6;
+  background-color: #9fedd7;
   padding: 20px 35px;
   width: 15vw;
   height: 100vh;
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.3);
 }
 .logo {
   text-decoration: none;
@@ -88,7 +89,7 @@ p {
   align-items: center;
   width: 100%;
   padding: 10px 10px;
-  background-color: rgb(215, 239, 230);
+  background-color: #9fedd7;
   gap: 5%;
   padding-left: 15vw;
 }
