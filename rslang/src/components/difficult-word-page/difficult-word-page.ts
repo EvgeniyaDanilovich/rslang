@@ -16,7 +16,7 @@ export async function use() {
     const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
 
     if (typeof difficultWords == 'number') {
-        getNewToken();
+        await getNewToken();
     }
 
     const renderWords = (currentWords: FilterWord[]) =>
