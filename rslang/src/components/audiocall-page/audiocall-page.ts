@@ -13,6 +13,8 @@ let modeGame: boolean;
 const arrWords: audiocallWord[] = [];
 const arrTrueWord: Word[] = [];
 const arrFalseWord: Word[] = [];
+let longestSeries = 0;
+let previousLongestSeries = 0;
 
 //---------- сreate and show a window for choosing the level of difficulty ----------//
 
@@ -33,18 +35,23 @@ function keyboardControlLevel(EO: KeyboardEvent): void {
     const containerLevel = document.querySelector('.container-level');
     if (EO.code === 'Digit1') {
         (containerLevel.children[1] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit2') {
         (containerLevel.children[1] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit3') {
         (containerLevel.children[2] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit4') {
         (containerLevel.children[3] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit5') {
         (containerLevel.children[4] as HTMLElement).click();
+        longestSeries = 0;
     }
 }
 
@@ -194,8 +201,7 @@ async function playCard(): Promise<void> {
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
-let longestSeries = 0;
-let previousLongestSeries = 0;
+
 function comparsionWords(EO: Event) {
     if (
         (EO.target as HTMLElement).dataset.word !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
@@ -208,6 +214,8 @@ function comparsionWords(EO: Event) {
         arrTrueWord.push(arrWords[countCard - 1].word);
         longestSeries = longestSeries + 1;
         if (longestSeries > previousLongestSeries) previousLongestSeries = longestSeries;
+        console.log(previousLongestSeries);
+        console.log(longestSeries);
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
@@ -290,6 +298,8 @@ async function showResult() {
         await getNewToken();
     } else {
         let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
+        // console.log(longestSeriesAudioCall);
+        // console.log(previousLongestSeries);
         if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
         const AudioCallAllWords = statistic.optional.AudioCallAllWords;
         const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;
@@ -306,6 +316,7 @@ async function showResult() {
         };
         await upsertStatistic(`${localStorage.getItem('id')}`, optional);
     }
+    longestSeries = 0;
 }
 
 //---------- play audio word ----------//
