@@ -1,6 +1,6 @@
-import { deleteUserWord, getAllUserWords } from '../../api/users-words';
+import { deleteUserWord } from '../../api/users-words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
-import { FilterWord, GetAggregatedWords, UserWords } from '../../models/types';
+import { FilterWord, GetAggregatedWords } from '../../models/types';
 import { getLocalStorage, getNewToken, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
@@ -13,7 +13,15 @@ export async function use() {
         filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
     };
 
+    const learnedWordQuery: GetAggregatedWords = {
+        userId: userId,
+        filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
+    };
+
     const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+    const learnedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
+    console.log(difficultWords);
+    console.log(learnedWords);
 
     if (typeof difficultWords == 'number') {
         await getNewToken();
@@ -25,17 +33,17 @@ export async function use() {
                 (word: FilterWord) =>
                     `${renderWord(
                         word._id,
-                        word.userWord.optional.word,
-                        word.userWord.optional.transcription,
-                        word.userWord.optional.wordTranslate,
-                        word.userWord.optional.image,
-                        word.userWord.optional.audio,
-                        word.userWord.optional.audioMeaning,
-                        word.userWord.optional.audioExample,
-                        word.userWord.optional.textMeaning,
-                        word.userWord.optional.textMeaningTranslate,
-                        word.userWord.optional.textExample,
-                        word.userWord.optional.textExampleTranslate
+                        word.word,
+                        word.transcription,
+                        word.wordTranslate,
+                        word.image,
+                        word.audio,
+                        word.audioMeaning,
+                        word.audioExample,
+                        word.textMeaning,
+                        word.textMeaningTranslate,
+                        word.textExample,
+                        word.textExampleTranslate
                     )}`
             )
             .join('')}`;
