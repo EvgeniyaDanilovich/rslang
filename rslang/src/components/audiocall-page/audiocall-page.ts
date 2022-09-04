@@ -214,8 +214,6 @@ function comparsionWords(EO: Event) {
         arrTrueWord.push(arrWords[countCard - 1].word);
         longestSeries = longestSeries + 1;
         if (longestSeries > previousLongestSeries) previousLongestSeries = longestSeries;
-        console.log(previousLongestSeries);
-        console.log(longestSeries);
     }
     (document.querySelector('.button-next') as HTMLElement).innerText = 'NEXT';
     document.querySelectorAll('.word-answer').forEach((el) => el.removeEventListener('click', comparsionWords));
@@ -298,8 +296,6 @@ async function showResult() {
         await getNewToken();
     } else {
         let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
-        // console.log(longestSeriesAudioCall);
-        // console.log(previousLongestSeries);
         if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
         const AudioCallAllWords = statistic.optional.AudioCallAllWords;
         const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;

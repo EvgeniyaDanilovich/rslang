@@ -110,6 +110,7 @@ async function setTimer() {
                         },
                     };
                     await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+                    longestSeries = 0;
                 }
             } else {
                 const strTimer = `${Math.trunc(timeMinute)}`;
