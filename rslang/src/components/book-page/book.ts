@@ -1,10 +1,11 @@
-import { createUserWord } from '../../api/users-words';
+import { createUserWord, getUserWord, updateUserWord } from '../../api/users-words';
 import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { UserWord, Word } from '../../models/types';
 import { addToLocalStorage, getLocalStorage, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
+import { addLearnedWordByButton } from '../../components/learned-words/learned-words';
 
 import './book.scss';
 
@@ -96,6 +97,7 @@ export async function allBookPage() {
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
+                addLearnedWordByButton(isAuthorized, cardId);
             }
             if (currentItem.closest('.hard')) {
                 currentCard.classList.remove('selected-like');

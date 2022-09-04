@@ -54,10 +54,11 @@ export async function getUserWord(userId: string, wordId: string) {
 
 export async function updateUserWord(userId: string, wordId: string, param: object) {
     const rawResponse = await fetch(`${path}/users/${userId}/words/${wordId}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             Authorization: `Bearer ${token}`,
             Accept: 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(param),
     });

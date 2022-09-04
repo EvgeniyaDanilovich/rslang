@@ -3,8 +3,10 @@ import { path, contentDifficult, svgImage, svgRestart } from '../../utils/consta
 import { Word, audiocallWord } from '../../models/types';
 import './audiocall-page.scss';
 import { getChunkWords } from '../../api/words';
+import { addLearnedWords, removeLearnedWords } from '../../components/learned-words/learned-words';
 import { WordsDifficultyLevel } from '../../enums/levels';
 import { getStatistic, upsertStatistic } from '../../api/user-statistic';
+// export { modeGame };
 
 let levelDifficult: number;
 let trueWord: Word;
@@ -269,6 +271,8 @@ async function showResult() {
         return modeGame === true ? renderAudiocallPageFromMenu() : renderAudiocallPageFromTextbook();
     });
     (document.querySelector('.top-panel') as HTMLElement).style.justifyContent = 'flex-end';
+    addLearnedWords(arrTrueWord);
+    removeLearnedWords(arrFalseWord);
 
     //---------add to statistic
 
