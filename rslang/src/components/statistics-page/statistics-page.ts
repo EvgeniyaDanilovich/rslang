@@ -1,6 +1,16 @@
 import './statistics-page.scss';
 import { getNewToken, renderPageContent } from '../../utils/common';
 import { getStatistic } from '../../api/user-statistic';
+import { GetAggregatedWords } from '../../models/types';
+import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
+
+// const learnedWordQuery: GetAggregatedWords = {
+//     userId: localStorage.getItem('id'),
+//     filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
+// };
+// console.log(learnedWordQuery);
+// const studiedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
+// console.log(studiedWords);
 
 function statisticsPage(
     audiocallNewWords: number | string,
@@ -39,10 +49,28 @@ function statisticsPage(
     return statisticsPage;
 }
 
+async function getLernedWord() {
+    const learnedWordQuery: GetAggregatedWords = {
+        userId: localStorage.getItem('id'),
+        filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
+    };
+    const studiedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
+    console.log(studiedWords);
+    let countLearnedWords;
+    if (typeof studiedWords != 'number') {
+        countLearnedWords = studiedWords[0].paginatedResults.length;
+    } else {
+        countLearnedWords = 0;
+    }
+    console.log(countLearnedWords);
+    return countLearnedWords;
+}
+
 export async function renderStatisticsPage() {
     const stopper = `
     <h1 class="statistics-title">Please log in</h1>
     `;
+
     if (localStorage.getItem('id')) {
         const statistic = await getStatistic(`${localStorage.getItem('id')}`);
 
@@ -84,7 +112,7 @@ export async function renderStatisticsPage() {
                     SprintCorrectAnswers,
                     `${statistic.optional.longestSeriesSprint}`,
                     0,
-                    0,
+                    await getLernedWord(),
                     CorrectAnswers
                 )
             );
