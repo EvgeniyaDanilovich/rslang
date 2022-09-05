@@ -1,10 +1,11 @@
-import { createUserWord } from '../../api/users-words';
-import { getChunkWords } from '../../api/words';
+import { createUserWord, getUserWord, updateUserWord } from '../../api/users-words';
+import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
 import { FilterWord, GetAggregatedWords, UserWord, Word } from '../../models/types';
 import { addToLocalStorage, getLocalStorage, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
+import { addLearnedWordByButton } from '../../components/learned-words/learned-words';
 
 import './book.scss';
 import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
@@ -154,13 +155,7 @@ export async function allBookPage() {
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
-
-                const word: UserWord = {
-                    difficulty: 'learned',
-                    optional: {},
-                };
-
-                createUserWord(userId, cardId, word);
+                addLearnedWordByButton(isAuthorized, cardId);
             }
             if (currentItem.closest('.hard')) {
                 currentCard.classList.remove('selected-like');

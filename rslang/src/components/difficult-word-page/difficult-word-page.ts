@@ -7,7 +7,6 @@ import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-wo
 
 export async function use() {
     const userId = getLocalStorage(LocalStorageKeys.ID);
-
     const difficultWordQuery: GetAggregatedWords = {
         userId: userId,
         filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
