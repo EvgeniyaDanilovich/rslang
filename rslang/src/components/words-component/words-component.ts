@@ -19,6 +19,8 @@ function addStatusButtons() {
               </div>`;
         }
     }
+
+    return '';
 }
 
 export const renderWord = (
