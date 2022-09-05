@@ -64,53 +64,54 @@ export async function initSprintPageFromBook() {
     await setTimer();
 }
 
+export async function updateStatistic() {
+    if (localStorage.getItem('id')) {
+        const statistic = await getStatistic(`${localStorage.getItem('id')}`);
+        if (statistic == 404) {
+            const optional = {
+                learnedWords: 0,
+                optional: {
+                    longestSeriesSprint: `${previousLongestSeries}`,
+                    SprintAllWords: `${trueResultGame.length + falseResultGame.length}`,
+                    SprintCorrectAnswers: `${trueResultGame.length}`,
+                    longestSeriesAudioCall: `${0}`,
+                    AudioCallAllWords: `${0}`,
+                    AudioCallCorrectAnswers: `${0}`,
+                },
+            };
+            await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+        } else if (statistic == 401) {
+            await getNewToken();
+        } else {
+            let longestSeriesSprint = statistic.optional.longestSeriesSprint;
+            if (longestSeriesSprint < previousLongestSeries) longestSeriesSprint = previousLongestSeries;
+            const SprintAllWords = statistic.optional.SprintAllWords;
+            const SprintCorrectAnswers = statistic.optional.SprintCorrectAnswers;
+            const optional = {
+                learnedWords: 0,
+                optional: {
+                    longestSeriesSprint: `${longestSeriesSprint}`,
+                    SprintAllWords: `${Number(SprintAllWords) + trueResultGame.length + falseResultGame.length}`,
+                    SprintCorrectAnswers: `${Number(SprintCorrectAnswers) + trueResultGame.length}`,
+                    longestSeriesAudioCall: `${statistic.optional.longestSeriesAudioCall}`,
+                    AudioCallAllWords: `${statistic.optional.AudioCallAllWords}`,
+                    AudioCallCorrectAnswers: `${statistic.optional.AudioCallCorrectAnswers}`,
+                },
+            };
+            await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+            longestSeries = 0;
+        }
+    }
+}
+
 async function setTimer() {
     const timerElement = document.querySelector('.timer') as HTMLElement;
     let timeMinute = 60;
-
     const timer = setInterval(async function () {
         if (document.location.hash === '#/sprint-book' || document.location.hash === '#/sprint') {
             if (timeMinute < 0) {
                 clearInterval(timer);
                 renderGameResult(trueResultGame, falseResultGame);
-                //---------add to statistic
-
-                const statistic = await getStatistic(`${localStorage.getItem('id')}`);
-                if (statistic == 404) {
-                    const optional = {
-                        learnedWords: 0,
-                        optional: {
-                            longestSeriesSprint: `${previousLongestSeries}`,
-                            SprintAllWords: `${trueResultGame.length + falseResultGame.length}`,
-                            SprintCorrectAnswers: `${trueResultGame.length}`,
-                            longestSeriesAudioCall: `${0}`,
-                            AudioCallAllWords: `${0}`,
-                            AudioCallCorrectAnswers: `${0}`,
-                        },
-                    };
-                    await upsertStatistic(`${localStorage.getItem('id')}`, optional);
-                } else if (statistic == 401) {
-                    await getNewToken();
-                } else {
-                    let longestSeriesSprint = statistic.optional.longestSeriesSprint;
-                    if (longestSeriesSprint < previousLongestSeries) longestSeriesSprint = previousLongestSeries;
-                    const SprintAllWords = statistic.optional.SprintAllWords;
-                    const SprintCorrectAnswers = statistic.optional.SprintCorrectAnswers;
-                    const optional = {
-                        learnedWords: 0,
-                        optional: {
-                            longestSeriesSprint: `${longestSeriesSprint}`,
-                            SprintAllWords: `${
-                                Number(SprintAllWords) + trueResultGame.length + falseResultGame.length
-                            }`,
-                            SprintCorrectAnswers: `${Number(SprintCorrectAnswers) + trueResultGame.length}`,
-                            longestSeriesAudioCall: `${statistic.optional.longestSeriesAudioCall}`,
-                            AudioCallAllWords: `${statistic.optional.AudioCallAllWords}`,
-                            AudioCallCorrectAnswers: `${statistic.optional.AudioCallCorrectAnswers}`,
-                        },
-                    };
-                    await upsertStatistic(`${localStorage.getItem('id')}`, optional);
-                }
             } else {
                 const strTimer = `${Math.trunc(timeMinute)}`;
                 timerElement.innerHTML = strTimer;

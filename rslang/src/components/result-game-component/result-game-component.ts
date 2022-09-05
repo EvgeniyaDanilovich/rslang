@@ -2,6 +2,7 @@ import { Word } from '../../models/types';
 import { renderPageContent } from '../../utils/common';
 import { path, svgImage, svgRestart } from '../../utils/constants';
 import './result-game-component.scss';
+import { updateStatistic } from '../sprint-page/sprint-page';
 
 export function renderGameResult(arrTrueWords: Word[], arrFalseWords: Word[]) {
     const resTrue = arrTrueWords.reduce((res, el) => {
@@ -71,4 +72,5 @@ export function renderGameResult(arrTrueWords: Word[], arrFalseWords: Word[]) {
     reset.addEventListener('click', () => {
         document.location.reload();
     });
+    updateStatistic();
 }

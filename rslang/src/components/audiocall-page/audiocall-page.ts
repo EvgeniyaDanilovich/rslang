@@ -15,6 +15,8 @@ let modeGame: boolean;
 const arrWords: audiocallWord[] = [];
 const arrTrueWord: Word[] = [];
 const arrFalseWord: Word[] = [];
+let longestSeries = 0;
+let previousLongestSeries = 0;
 
 //---------- сreate and show a window for choosing the level of difficulty ----------//
 
@@ -35,18 +37,23 @@ function keyboardControlLevel(EO: KeyboardEvent): void {
     const containerLevel = document.querySelector('.container-level');
     if (EO.code === 'Digit1') {
         (containerLevel.children[1] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit2') {
         (containerLevel.children[1] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit3') {
         (containerLevel.children[2] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit4') {
         (containerLevel.children[3] as HTMLElement).click();
+        longestSeries = 0;
     }
     if (EO.code === 'Digit5') {
         (containerLevel.children[4] as HTMLElement).click();
+        longestSeries = 0;
     }
 }
 
@@ -196,8 +203,7 @@ async function playCard(): Promise<void> {
 }
 
 //---------- compare the selected word with a known correct word, prepare the data for the result ----------//
-let longestSeries = 0;
-let previousLongestSeries = 0;
+
 function comparsionWords(EO: Event) {
     if (
         (EO.target as HTMLElement).dataset.word !== (document.querySelector('.word-audio') as HTMLElement).dataset.word
@@ -275,40 +281,42 @@ async function showResult() {
     removeLearnedWords(arrFalseWord);
 
     //---------add to statistic
-
-    const statistic = await getStatistic(`${localStorage.getItem('id')}`);
-    if (statistic == 404) {
-        const optional = {
-            learnedWords: 0,
-            optional: {
-                longestSeriesAudioCall: `${previousLongestSeries}`,
-                AudioCallAllWords: `${arrTrueWord.length + arrFalseWord.length}`,
-                AudioCallCorrectAnswers: `${arrTrueWord.length}`,
-                longestSeriesSprint: `${0}`,
-                SprintAllWords: `${0}`,
-                SprintCorrectAnswers: `${0}`,
-            },
-        };
-        await upsertStatistic(`${localStorage.getItem('id')}`, optional);
-    } else if (statistic == 401) {
-        await getNewToken();
-    } else {
-        let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
-        if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
-        const AudioCallAllWords = statistic.optional.AudioCallAllWords;
-        const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;
-        const optional = {
-            learnedWords: 0,
-            optional: {
-                longestSeriesAudioCall: `${longestSeriesAudioCall}`,
-                AudioCallAllWords: `${Number(AudioCallAllWords) + arrTrueWord.length + arrFalseWord.length}`,
-                AudioCallCorrectAnswers: `${Number(AudioCallCorrectAnswers) + arrTrueWord.length}`,
-                longestSeriesSprint: `${statistic.optional.longestSeriesSprint}`,
-                SprintAllWords: `${statistic.optional.SprintAllWords}`,
-                SprintCorrectAnswers: `${statistic.optional.SprintCorrectAnswers}`,
-            },
-        };
-        await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+    if (localStorage.getItem('id')) {
+        const statistic = await getStatistic(`${localStorage.getItem('id')}`);
+        if (statistic == 404) {
+            const optional = {
+                learnedWords: 0,
+                optional: {
+                    longestSeriesAudioCall: `${previousLongestSeries}`,
+                    AudioCallAllWords: `${arrTrueWord.length + arrFalseWord.length}`,
+                    AudioCallCorrectAnswers: `${arrTrueWord.length}`,
+                    longestSeriesSprint: `${0}`,
+                    SprintAllWords: `${0}`,
+                    SprintCorrectAnswers: `${0}`,
+                },
+            };
+            await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+        } else if (statistic == 401) {
+            await getNewToken();
+        } else {
+            let longestSeriesAudioCall = statistic.optional.longestSeriesAudioCall;
+            if (longestSeriesAudioCall < previousLongestSeries) longestSeriesAudioCall = previousLongestSeries;
+            const AudioCallAllWords = statistic.optional.AudioCallAllWords;
+            const AudioCallCorrectAnswers = statistic.optional.AudioCallCorrectAnswers;
+            const optional = {
+                learnedWords: 0,
+                optional: {
+                    longestSeriesAudioCall: `${longestSeriesAudioCall}`,
+                    AudioCallAllWords: `${Number(AudioCallAllWords) + arrTrueWord.length + arrFalseWord.length}`,
+                    AudioCallCorrectAnswers: `${Number(AudioCallCorrectAnswers) + arrTrueWord.length}`,
+                    longestSeriesSprint: `${statistic.optional.longestSeriesSprint}`,
+                    SprintAllWords: `${statistic.optional.SprintAllWords}`,
+                    SprintCorrectAnswers: `${statistic.optional.SprintCorrectAnswers}`,
+                },
+            };
+            await upsertStatistic(`${localStorage.getItem('id')}`, optional);
+        }
+        longestSeries = 0;
     }
 }
 
