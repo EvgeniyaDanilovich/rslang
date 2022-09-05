@@ -88,33 +88,35 @@ export async function allBookPage() {
     const idOfLearnedCards: string[] = [];
 
     async function getCardStatus() {
-        const difficultWordQuery: GetAggregatedWords = {
-            userId: userId,
-            filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
-        };
+        if (userId) {
+            const difficultWordQuery: GetAggregatedWords = {
+                userId: userId,
+                filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
+            };
 
-        const learnedWordQuery: GetAggregatedWords = {
-            userId: userId,
-            filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
-        };
+            const learnedWordQuery: GetAggregatedWords = {
+                userId: userId,
+                filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
+            };
 
-        const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
-        const learnedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
+            const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+            const learnedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
 
-        const difficultWordsArr = difficultWords[0].paginatedResults;
-        for (const difficultWord of difficultWordsArr) {
-            for (const word of dataWords) {
-                if (difficultWord._id === word.id) {
-                    idOfHardCards.push(word.id);
+            const difficultWordsArr = difficultWords[0].paginatedResults;
+            for (const difficultWord of difficultWordsArr) {
+                for (const word of dataWords) {
+                    if (difficultWord._id === word.id) {
+                        idOfHardCards.push(word.id);
+                    }
                 }
             }
-        }
 
-        const learnedWordsArr = learnedWords[0].paginatedResults;
-        for (const learnedWord of learnedWordsArr) {
-            for (const word of dataWords) {
-                if (learnedWord._id === word.id) {
-                    idOfLearnedCards.push(word.id);
+            const learnedWordsArr = learnedWords[0].paginatedResults;
+            for (const learnedWord of learnedWordsArr) {
+                for (const word of dataWords) {
+                    if (learnedWord._id === word.id) {
+                        idOfLearnedCards.push(word.id);
+                    }
                 }
             }
         }
@@ -159,7 +161,7 @@ export async function allBookPage() {
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
-                addLearnedWordByButton(isAuthorized, cardId);
+                addLearnedWordByButton(userId, cardId);
             }
             if (currentItem.closest('.hard')) {
                 currentCard.classList.remove('selected-like');
