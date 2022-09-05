@@ -172,7 +172,12 @@ function renderCardWords(word: Word, wordFalse: Word): string {
 
 let currentIndex = -1;
 
-function getRandomTrueWord(): number {
+export function updateCurrentIndex() {
+    currentIndex = -1;
+}
+updateCurrentIndex();
+
+function getRandomTrueWord() {
     const indexesWord20: number[] = [7, 6, 8, 2, 15, 19, 1, 3, 17, 13, 11, 4, 0, 18, 16, 9, 5, 10, 12, 14];
     const indexesWord40 = [
         7,
@@ -220,10 +225,10 @@ function getRandomTrueWord(): number {
     if (isGameFromBook) {
         currentIndex++;
         if (page > 0) {
-            if (currentIndex === 40) renderGameResult(trueResultGame, falseResultGame);
             return indexesWord40[currentIndex];
         } else {
-            if (currentIndex === 20) renderGameResult(trueResultGame, falseResultGame);
+            console.log(indexesWord20[currentIndex]);
+            console.log(allWordsForCurrentGame[indexesWord20[currentIndex]].word);
             return indexesWord20[currentIndex];
         }
     } else {
@@ -345,6 +350,13 @@ function listenEvents(): void {
     }
 
     function oneStepGame(result: boolean) {
+        if (page > 0 && currentIndex === 39) {
+            renderGameResult(trueResultGame, falseResultGame);
+            return;
+        } else if (page === 0 && currentIndex === 19) {
+            renderGameResult(trueResultGame, falseResultGame);
+            return;
+        }
         if (currentTranslate === result) {
             changeScore();
             updateStage();

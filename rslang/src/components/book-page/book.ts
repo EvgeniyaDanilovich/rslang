@@ -9,6 +9,7 @@ import { addLearnedWordByButton } from '../../components/learned-words/learned-w
 
 import './book.scss';
 import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
+import { updateCurrentIndex } from '../sprint-page/sprint-page';
 
 export async function allBookPage() {
     const userId = getLocalStorage(LocalStorageKeys.ID);
@@ -52,8 +53,8 @@ export async function allBookPage() {
     const renderBookPage = async (): Promise<void> => {
         const content = `
     <div class="game-nav">
-    <div class="game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
-    <div class="game"><a href="#/sprint-book" data-navigo>Sprint</a></div>
+    <div class="game game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
+    <div class=" game game-sprint"><a href="#/sprint-book" data-navigo>Sprint</a></div>
 </div>
 <div class="sections">
     <div >Level:</div>
@@ -73,6 +74,9 @@ export async function allBookPage() {
 
         renderPageContent(content);
         document.querySelector('.audiocall')?.addEventListener('click', renderAudiocallPageFromTextbook);
+        document.querySelector('.game-sprint')?.addEventListener('click', () => {
+            updateCurrentIndex();
+        });
         getCardStatus().then(() => {
             updateCardStatus();
         });
