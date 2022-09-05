@@ -154,6 +154,8 @@ async function getWordsFromBook() {
         const dataWords: Word[] = await getChunkWords(group, page);
         allWordsForCurrentGame.push(...dataWords);
     }
+
+    console.log(allWordsForCurrentGame);
 }
 
 const cardWords = (id: string, englishWord: string, russianWord: string): string => `
@@ -220,10 +222,10 @@ function getRandomTrueWord(): number {
     if (isGameFromBook) {
         currentIndex++;
         if (page > 0) {
-            if (currentIndex === 40) renderGameResult(trueResultGame, falseResultGame);
+            if (currentIndex === 41) renderGameResult(trueResultGame, falseResultGame);
             return indexesWord40[currentIndex];
         } else {
-            if (currentIndex === 20) renderGameResult(trueResultGame, falseResultGame);
+            if (currentIndex === 21) renderGameResult(trueResultGame, falseResultGame);
             return indexesWord20[currentIndex];
         }
     } else {
