@@ -7,6 +7,7 @@ import { renderWord } from '../words-component/words-component';
 import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
 
 import './book.scss';
+import { updateCurrentIndex } from '../sprint-page/sprint-page';
 
 export async function allBookPage() {
     const isAuthorized = getLocalStorage(LocalStorageKeys.ID);
@@ -50,8 +51,8 @@ export async function allBookPage() {
     const renderBookPage = (): void => {
         const content = `
     <div class="game-nav">
-    <div class="game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
-    <div class="game"><a href="#/sprint-book" data-navigo>Sprint</a></div>
+    <div class="game game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
+    <div class=" game game-sprint"><a href="#/sprint-book" data-navigo>Sprint</a></div>
 </div>
 <div class="sections">
     <div >Level:</div>
@@ -71,6 +72,9 @@ export async function allBookPage() {
 
         renderPageContent(content);
         document.querySelector('.audiocall')?.addEventListener('click', renderAudiocallPageFromTextbook);
+        document.querySelector('.game-sprint')?.addEventListener('click', () => {
+            updateCurrentIndex();
+        });
     };
 
     renderBookPage();
