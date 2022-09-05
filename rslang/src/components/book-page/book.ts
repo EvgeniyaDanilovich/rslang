@@ -1,23 +1,25 @@
-import { createUserWord } from '../../api/users-words';
+import { createUserWord, getUserWord, updateUserWord } from '../../api/users-words';
 import { getChunkWords, getWordWithAssetsById } from '../../api/words';
 import { LocalStorageKeys } from '../../enums/local-storage-keys';
-import { UserWord, Word } from '../../models/types';
+import { FilterWord, GetAggregatedWords, UserWord, Word } from '../../models/types';
 import { addToLocalStorage, getLocalStorage, playAudioBook, renderPageContent } from '../../utils/common';
 import { renderWord } from '../words-component/words-component';
 import { renderAudiocallPageFromTextbook } from '../audiocall-page/audiocall-page';
+import { addLearnedWordByButton } from '../../components/learned-words/learned-words';
 
 import './book.scss';
+import { getAllAggregatedWords, parseQuery } from '../../api/users-aggregated-words';
 import { updateCurrentIndex } from '../sprint-page/sprint-page';
 
 export async function allBookPage() {
-    const isAuthorized = getLocalStorage(LocalStorageKeys.ID);
+    const userId = getLocalStorage(LocalStorageKeys.ID);
 
     let page = Number(getLocalStorage('page') ? getLocalStorage('page') : 0);
     if (page === 0) addToLocalStorage('page', '0');
     let group = Number(getLocalStorage('group') ? getLocalStorage('group') : 0);
     if (group === 0) addToLocalStorage('group', '0');
 
-    const dataWords = await getChunkWords(group, page);
+    const dataWords: Word[] = await getChunkWords(group, page);
 
     const renderWords = (currentWords: Word[]) =>
         `${currentWords
@@ -48,7 +50,7 @@ export async function allBookPage() {
         return arr.join(' ');
     };
 
-    const renderBookPage = (): void => {
+    const renderBookPage = async (): Promise<void> => {
         const content = `
     <div class="game-nav">
     <div class="game game-audiocall"><a href="#/audiocall-from-textbook" data-navigo>Audio call</a></div>
@@ -75,9 +77,66 @@ export async function allBookPage() {
         document.querySelector('.game-sprint')?.addEventListener('click', () => {
             updateCurrentIndex();
         });
+        getCardStatus().then(() => {
+            updateCardStatus();
+        });
     };
 
     renderBookPage();
+
+    const idOfHardCards: string[] = [];
+    const idOfLearnedCards: string[] = [];
+
+    async function getCardStatus() {
+        const difficultWordQuery: GetAggregatedWords = {
+            userId: userId,
+            filter: { $and: [{ 'userWord.difficulty': 'hard' }] },
+        };
+
+        const learnedWordQuery: GetAggregatedWords = {
+            userId: userId,
+            filter: { $and: [{ 'userWord.difficulty': 'learned' }] },
+        };
+
+        const difficultWords = await getAllAggregatedWords(parseQuery(difficultWordQuery));
+        const learnedWords = await getAllAggregatedWords(parseQuery(learnedWordQuery));
+
+        const difficultWordsArr = difficultWords[0].paginatedResults;
+        for (const difficultWord of difficultWordsArr) {
+            for (const word of dataWords) {
+                if (difficultWord._id === word.id) {
+                    idOfHardCards.push(word.id);
+                }
+            }
+        }
+
+        const learnedWordsArr = learnedWords[0].paginatedResults;
+        for (const learnedWord of learnedWordsArr) {
+            for (const word of dataWords) {
+                if (learnedWord._id === word.id) {
+                    idOfLearnedCards.push(word.id);
+                }
+            }
+        }
+    }
+
+    function updateCardStatus() {
+        const allCards = document.querySelectorAll('.card') as NodeListOf<Element>;
+        allCards.forEach((card) => {
+            card.classList.remove('selected-hard');
+            card.classList.remove('selected-like');
+        });
+
+        idOfHardCards.map((id) => {
+            const card = document.getElementById(`${id}`) as HTMLElement;
+            card.classList.add('selected-hard');
+        });
+
+        idOfLearnedCards.map((id) => {
+            const card = document.getElementById(`${id}`) as HTMLElement;
+            card.classList.add('selected-like');
+        });
+    }
 
     async function updateWordsOnPage(wordWrapper: HTMLElement, group: number, page: number) {
         const dataWords: Word[] = await getChunkWords(group, page);
@@ -91,27 +150,27 @@ export async function allBookPage() {
     sectionItems[group].classList.add('active');
     pageItems[page].classList.add('active');
 
-    async function initCardStatus(event: Event) {
+    function initCardStatus(event: Event) {
         const currentItem = event.target as HTMLElement;
-        if (isAuthorized) {
+        if (userId) {
             const currentCard = currentItem.closest('.card') as HTMLElement;
             const cardId: string = currentCard.getAttribute('id');
 
             if (currentItem.closest('.like')) {
                 currentCard.classList.remove('selected-hard');
                 currentCard.classList.add('selected-like');
+                addLearnedWordByButton(isAuthorized, cardId);
             }
             if (currentItem.closest('.hard')) {
                 currentCard.classList.remove('selected-like');
                 currentCard.classList.add('selected-hard');
 
-                const wordInfo: Word = await getWordWithAssetsById(cardId);
                 const word: UserWord = {
                     difficulty: 'hard',
-                    optional: wordInfo,
+                    optional: {},
                 };
 
-                createUserWord(isAuthorized, cardId, word);
+                createUserWord(userId, cardId, word);
             }
         }
     }
@@ -120,24 +179,27 @@ export async function allBookPage() {
     wordWrapper.addEventListener('click', initCardStatus);
 
     const sections = document.querySelector('.sections') as HTMLElement;
-    sections.addEventListener('click', (event: Event): void => {
-        const currentItem = event.target as HTMLElement;
+    sections.addEventListener(
+        'click',
+        async (event: Event): Promise<void> => {
+            const currentItem = event.target as HTMLElement;
 
-        if (currentItem.classList.contains('section')) {
-            sectionItems.forEach((item) => {
-                item.classList.remove('active');
-            });
-            currentItem.classList.add('active');
+            if (currentItem.classList.contains('section')) {
+                sectionItems.forEach((item) => {
+                    item.classList.remove('active');
+                });
+                currentItem.classList.add('active');
 
-            group = Number(currentItem.dataset.level);
-            updateWordsOnPage(wordWrapper, group, page);
-            addToLocalStorage('group', `${group}`);
+                group = Number(currentItem.dataset.level);
+                await updateWordsOnPage(wordWrapper, group, page);
+                addToLocalStorage('group', `${group}`);
+            }
         }
-    });
+    );
 
     const pagination = document.querySelector('.pagination') as HTMLElement;
 
-    pagination.addEventListener('click', (event: Event) => {
+    pagination.addEventListener('click', async (event: Event) => {
         const currentItem = event.target as HTMLElement;
 
         if (currentItem.classList.contains('page')) {
@@ -147,12 +209,16 @@ export async function allBookPage() {
             currentItem.classList.add('active');
 
             page = Number(currentItem.dataset.page);
-            updateWordsOnPage(wordWrapper, group, page);
+            await updateWordsOnPage(wordWrapper, group, page);
             addToLocalStorage('page', `${page}`);
+
+            // getCardStatus().then(() => {
+            //     updateCardStatus();
+            // });
         }
     });
 
-    if (isAuthorized) {
+    if (userId) {
         const subNavigate = document.querySelector('.game-nav') as HTMLElement;
         const difficultWordsLink = `<div class="difficult"><a href="#/difficult-words" data-navigo>Difficult words</a></div>`;
         subNavigate.innerHTML += difficultWordsLink;
