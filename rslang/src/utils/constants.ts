@@ -25,7 +25,7 @@ const svgImage = `
                 <defs>
                     <style>
                         .cls-1 {
-                            fill: #101820;
+                            fill: #61BB99;
                         }
                     </style>
                 </defs>

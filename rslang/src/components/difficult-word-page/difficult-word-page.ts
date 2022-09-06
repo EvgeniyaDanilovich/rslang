@@ -48,7 +48,7 @@ export async function use() {
             .join('')}`;
 
     const difficultPage = `
-    <div class="word-wrapper">
+    <div class="word-wrapper container">
     <h2>Difficult words</h2>
     ${renderWords(difficultWords[0].paginatedResults)}
 </div> `;

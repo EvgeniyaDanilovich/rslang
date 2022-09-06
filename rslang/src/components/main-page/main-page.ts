@@ -116,21 +116,39 @@ export const mainPageHtml = `
                 <img class="about-us-img" src="img/igor.jpeg" alt="">
                 <div class="about-us-card-text">
                     <p class="about-us-name">Igor</p>
-                    <p>Developed the AudioCall game, participated in the development of the application design, participated in the setup of sending data to the server and receiving data from the server, described the interfaces.</p>
-                </div>
+                    <ul>
+                        <li>Develope the AudioCall game</li>
+                        <li>Participate in the setup of sending data to the server and receiving data from the server</li>
+                        <li>Participate in the development of the application design</li>
+                        <li>Described the interfaces</li>
+                     </ul>
+                    </div>
             </div>
             <div class="about-us-card">
                 <img class="about-us-img" src="img/eugenia.jpg" alt="">
                 <div class="about-us-card-text">
-                    <p class="about-us-name">Eugenia</p>
-                    <p>Developed a Sprint game, configured routing, developed textbook pages and word cards, developed a difficult words page, participated in the development of the application design, set up a github for the work of the team.</p>
+                    <p class="about-us-name">Evgeniya</p>
+                    <ul>
+                        <li>Develop a Sprint game</li>
+                        <li>Configure routing</li>
+                        <li>Develope textbook pages and word cards</li>
+                        <li>Developed a difficult words page</li>
+                        <li>Participated in the development of the application design</li>
+                        <li>Set up a github for the work of the team</li>
+                    </ul>
                 </div>
             </div>
             <div class="about-us-card">
                 <img class="about-us-img" src="img/darya.jpg" alt="">
                 <div class="about-us-card-text">
                     <p class="about-us-name">Darya</p>
-                    <p>Created authorization and registration pages, set up a backend, created a statistics page and the main page, participated in setting up sending data to the server and receiving data from the server, participated in the development of the application design</p>
+                       <ul>
+                       <li>Create authorization and registration pages</li>
+                       <li>Set up a backend</li>
+                       <li>Create a statistics page and the main page</li>
+                       <li>Participate in setting up sending data to the server and receiving data from the server</li>
+                       <li>participate in the development of the application design</li>
+                       </ul>
                 </div>
             </div>
         </div>
