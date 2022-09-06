@@ -1,0 +1,98 @@
+.card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin: 0px 0px 30px 0px;
+    border: 3px solid #61BB99;
+    border-radius: 20px;
+    &.selected-hard{
+      background-color: #FFF0F4;
+      border: 3px solid #A22D4C;
+    }
+    &.selected-like{
+      background-color: #EBFFF7;
+  }
+  
+    &__img {
+      img{
+        width: 200px;
+        height: 220px;
+        background-color: rgb(73, 141, 161);
+        object-fit: cover;
+      }
+    }
+  
+    &__info {
+      margin: 0px 0px 0px 40px;
+      flex: 1 1 auto;
+    }
+  }
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0px 0px 20px 0px;
+  }
+  .word {
+    font-size: 28px;
+    margin: 0px 20px 0px 0px;
+  }
+  .transcription {
+    flex: 1 1 auto;
+  }
+  .sound {
+    svg{
+      width: 50px;
+      height: 40px;
+      cursor: pointer;
+    }
+  }
+  .translation {
+    flex: 0 0 100%;
+  }
+  .explain {
+  }
+  .explain-translation {
+    margin: 0px 0px 20px 0px;
+  }
+  .example {
+  }
+  .example-translation {
+  }
+
+  .status{
+    display: flex;
+    margin: 30px 0px 0px 0px;
+    .status-btn{
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      border-radius: 100px;
+    }
+    .hard{
+      position: relative;
+      padding: 12px 30px 12px 56px;
+      margin: 0px 20px 0px 0px;
+      border: 2px solid #A22D4C;    
+      color: #A22D4C;
+      // background-color: #fff;
+      &::before{
+        content: '';
+        position: absolute;
+        top: calc(50% - 8px);
+        left: 30px;
+        width: 16px;
+        height: 16px;
+        background-image: url('../../img/plus.svg');
+      }
+    }
+    .like{
+      background-color: #61BB99;
+      margin: 0px 20px 0px 0px;
+    }
+    .delete{
+        background-color: #61BB99;
+    }
+  }
