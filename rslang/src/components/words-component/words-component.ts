@@ -3,6 +3,7 @@ import { getLocalStorage } from '../../utils/common';
 import { path, svgImage } from '../../utils/constants';
 
 import './words-component.scss';
+require('../../img/plus.svg');
 
 const isAuthorized = getLocalStorage(LocalStorageKeys.ID);
 
@@ -10,8 +11,8 @@ function addStatusButtons() {
     if (isAuthorized) {
         if (!(document.location.hash === '#/difficult-words')) {
             return ` <div class="status">
-                   <div class="status-btn hard">Hard</div>
                    <div class="status-btn like">Learned</div>
+                   <div class="status-btn hard">Add to hard words</div>
                </div>`;
         } else {
             return ` <div class="status">

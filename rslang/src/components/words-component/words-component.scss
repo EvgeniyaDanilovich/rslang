@@ -3,12 +3,14 @@
     align-items: center;
     padding: 15px;
     margin: 0px 0px 30px 0px;
-    box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
+    border: 3px solid #61BB99;
+    border-radius: 20px;
     &.selected-hard{
-      background-color: rgb(233, 197, 216);
+      background-color: #FFF0F4;
+      border: 3px solid #A22D4C;
     }
     &.selected-like{
-      background-color: #a2e08a;
+      background-color: #EBFFF7;
   }
   
     &__img {
@@ -62,19 +64,35 @@
     display: flex;
     margin: 30px 0px 0px 0px;
     .status-btn{
-      padding: 6px 15px;
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
       color: #fff;
-      border-radius: 2px;
+      border-radius: 100px;
     }
     .hard{
+      position: relative;
+      padding: 12px 30px 12px 56px;
       margin: 0px 20px 0px 0px;
-      background-color: rgb(226, 30, 30);
+      border: 2px solid #A22D4C;    
+      color: #A22D4C;
+      // background-color: #fff;
+      &::before{
+        content: '';
+        position: absolute;
+        top: calc(50% - 8px);
+        left: 30px;
+        width: 16px;
+        height: 16px;
+        background-image: url('../../img/plus.svg');
+      }
     }
     .like{
-      background-color: #68c247;
+      background-color: #61BB99;
+      margin: 0px 20px 0px 0px;
     }
     .delete{
-        background-color: rgb(104, 194, 71);
+        background-color: #61BB99;
     }
   }
